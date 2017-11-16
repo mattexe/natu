@@ -1,0 +1,16 @@
+extends layout
+
+block content
+  .main.container
+    .row
+      .col-md-6.col-md-offset-3
+        h1.display-4.m-b-2 Bienvenido a Naturvitia
+        form(method='POST' action='/login')
+          div.form-group
+            label(for='email') Usuario
+            input.form-control(type='text' id='email' placeholder='Usuario' name='email')
+          div.form-group
+            label(for='password') Contraseña
+            input.form-control(type='password' id='password' placeholder='Contraseña' name='password')
+          button.btn.btn-primary(type='submit') Entrar
+
