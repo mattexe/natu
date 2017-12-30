@@ -35,6 +35,10 @@ var UserSchema = new mongoose.Schema({
     password: {
       type: String,
       required: true
+    },
+    owner: {
+      type: String,
+      required: true
     }
 });
 // authenticate input against database documents
@@ -68,5 +72,6 @@ UserSchema.pre('save', function(next) {
     next();
   })
 });
+
 var User = mongoose.model('User', UserSchema);
 module.exports = User;

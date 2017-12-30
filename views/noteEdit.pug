@@ -1,0 +1,24 @@
+extends layout
+
+block content
+  .main.container
+    .row
+      .col-md-12
+        h1.display-4.m-b-2 Editar Nota
+      
+        // register form
+        form(method='POST' action='/notas/editar')
+          div.form-group.col-md-6
+            label(for='title') Título:
+            input#title.form-control(type='text', placeholder='Título' name='title' value=note.title)
+          div.form-group.col-md-12
+            label(for='descrption') Descripción:
+            input#description.form-control(type='textarea', placeholder='Descripción' name='description' value=note.description)
+          div.form-group.col-md-6
+            label(for='category') Categoría:
+            input#category.form-control(type='text', placeholder='Categoría' name='category' value=note.category)
+          div.form-group.col-md-6
+            label(for='subcategory') Subcategoría:
+            input#subcategory.form-control(type='text', placeholder='Subcategoría' name='subcategory' value=note.subcategory)
+          div.row.col-md-12
+            button.btn.btn-primary(type='submit') Guardar

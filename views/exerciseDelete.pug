@@ -1,0 +1,22 @@
+extends layout
+
+block content
+  .main.container
+    .row
+      .col-md-12
+        h1.display-4.m-b-2 Eliminar Usuario
+          h2.display-4 ¿Seguro que desea eliminar este ejercicio?
+          div.form-group.col-md-12
+            label(for='title') Título:
+            input#title.form-control(type='text', placeholder='Título' name='title' readonly value=exercise.title)
+          div.form-group.col-md-12
+            label(for='description') Descripción:
+            textarea#description.form-control(type='text', placeholder='Descripción' readonly name='description') #{exercise.description}
+          div.form-group.col-md-12
+            label(for='category') Categoría:
+            input#category.form-control(type='text', placeholder='Categoría' name='category' readonly value=exercise.category)
+          div.row.col-md-12
+            a(href='/ejercicios/' + exercise.id + '/eliminar/confirmado/')
+              button.btn.btn-primary(type='submit') Eliminar
+            a(href='/ejercicios/')
+              button.btn.btn-primary Cancelar

@@ -1,0 +1,21 @@
+extends layout
+
+block content
+  .main.container
+    .row
+      .col-md-12
+        h1.display-4.m-b-2 Nueva Tabla
+        div.row
+          form#table-form(method="POST" action="/tabla/nueva/")
+            div.form-group.row
+              label.col-md-3.col-form-label(for='table_title') Título
+              div.col-md-9
+                input.form-control(name='table_title')
+            div.form-group.row
+              label.col-md-3.col-form-label(for='table_description') Descripción
+              div.col-md-9
+                textarea.form-control(name='table_description')
+                input(type='hidden', name='client', value=user.id)
+            div.offset-md-3.col-md-7.form-group
+              button.btn.btn-primary(type="submit" name="submit") Guardar
+              a.btn.btn-secondary(href='/usuarios/') Cancelar

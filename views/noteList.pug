@@ -1,0 +1,25 @@
+extends layout
+
+block content
+  .main.container
+    .row
+      .col-md-12
+        h1.display-4.m-b-2 Notas
+        div.row.col-md-12
+          div.row
+            div.col-md-4
+              div.user-item
+                btn.btn.btn-secondary.user-boton-nuevo
+                  a(href='/notas/crear') +
+            each n in note
+              div.col-md-4
+                div.user-item
+                  div.user-texts
+                    h1= n.title
+                    p= n.description
+                    p= n.category
+                    p= n.subcategory
+                  a(href='/notas/' + n.id + '/editar') 
+                    btn.btn.btn-warning Editar
+                  a(href='/notas/' + n.id + '/eliminar') 
+                    btn.btn.btn-danger Eliminar

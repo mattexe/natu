@@ -1,0 +1,27 @@
+extends layout
+
+block content
+  .main.container
+    .row
+      .col-md-12
+        h1.display-4.m-b-2 ¿Seguro que desea eliminar a #{user.name} #{user.lastname}?
+        div.form-group.col-md-6
+          label(for='name') Nombre:
+          input#name.form-control(type='text', placeholder='Nombre' name='name' value=user.name)
+        div.form-group.col-md-6
+          label(for='lastname') Apellido:
+          input#lastname.form-control(type='text', placeholder='Apellido' name='lastname' value=user.lastname)
+        div.form-group.col-md-6
+          label(for='username') Nombre de Usuario:
+          input#username.form-control(type='text', placeholder='Usuario' name='username' value=user.username)
+        div.form-group.col-md-6
+          label(for='email') Email:
+          input#email.form-control(type='email', placeholder='nombre@email.com' name='email' value=user.email)
+        div.form-group.col-md-6
+          label(for='typeOfUser') Type of user:
+          input#email.form-control(type='typeOfUser', placeholder='type of user' name='typeOfUser' value=user.typeOfUser)
+        div.row.col-md-12
+          a(href='/usuarios/' + user.id + '/eliminar/confirmado/')
+            button.btn.btn-primary(type='submit') Eliminar
+          a(href='/usuarios/')
+            button.btn.btn-primary Cancelar

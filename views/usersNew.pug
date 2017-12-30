@@ -1,0 +1,36 @@
+extends layout
+
+block content
+  .main.container
+    .row
+      .col-md-12
+        h1.display-4.m-b-2 Registrar Nuevo Usuario
+      
+        // register form
+        form(method='POST' action='/usuarios/crear')
+          div.form-group.col-md-6
+            label(for='name') Nombre:
+            input#name.form-control(type='text', placeholder='Nombre' name='name')
+          div.form-group.col-md-6
+            label(for='lastname') Apellido:
+            input#lastname.form-control(type='text', placeholder='Apellido' name='lastname')
+          div.form-group.col-md-6
+            label(for='username') Nombre de Usuario:
+            input#username.form-control(type='text', placeholder='Usuario' name='username')
+          div.form-group.col-md-6
+            label(for='email') Email:
+            input#email.form-control(type='email', placeholder='nombre@email.com' name='email')
+          div.form-group.col-md-6
+            label(for='pw') Contraseña:
+            input#pw.form-control(type='password' name='password')
+          div.form-group.col-md-6
+            label(for='pw2') Confirmar Contraseña:
+            input#pw2.form-control(type='password' name='confirmPassword')
+          div.form-group.col-md-6
+            label(for='typeOfUser') Tipo de Usuario
+            select(name='typeOfUser')#typeOfUser.form-control
+              option(value='Cliente') Cliente
+              option(value='Admin') Admin
+              option(value='SuperAdmin') SuperAdmin
+          div.row.col-md-12
+            button.btn.btn-primary(type='submit') Registrar

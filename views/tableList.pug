@@ -1,0 +1,16 @@
+extends layout
+
+block content
+  .main.container
+    .row
+      .col-md-12
+        h1.display-4.m-b-2 Usuarios
+        div.row.col-md-12
+            each u in user
+             div.col-md-6= u.name + " " + u.lastname
+             div.col-md-2= u.typeOfUser + " "
+             btn.col-md-2.btn.btn-warning 
+               a(href='/editarusuario/' + u.id) Editar
+             btn.col-md-2.btn.btn-danger
+               a(href='/usuarios/eliminar/' + u.id) Eliminar
+

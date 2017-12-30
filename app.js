@@ -6,14 +6,14 @@ var MongoStore = require('connect-mongo')(session);
 var app = express();
 
 // mongodb connection
-mongoose.connect("mongodb://localhost:27017/bookworm");
+mongoose.connect("mongodb://localhost:27017/naturdb");
 var db = mongoose.connection;
 // mongo error
 db.on('error', console.error.bind(console, 'connection error:'));
 
 // use sessions for tracking logins
 app.use(session({
-  secret: 'treehouse loves you',
+  secret: 'naturvitia loves you',
   resave: true,
   saveUninitialized: false,
   store: new MongoStore({
@@ -30,11 +30,12 @@ app.use(function (req, res, next) {
 
 // parse incoming requests
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // serve static files from /public
 app.use(express.static(__dirname + '/public'));
 
+app.use('/uploads/', express.static(__dirname + '/uploads'))
 // view engine setup
 app.set('view engine', 'pug');
 app.set('views', __dirname + '/views');
@@ -59,6 +60,8 @@ app.use(function(err, req, res, next) {
     error: {}
   });
 });
+
+
 
 // listen on port 3000
 app.listen(3000, function () {

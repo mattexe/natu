@@ -1,0 +1,26 @@
+extends layout
+
+block content
+  .main.container
+    .row
+      .col-md-12
+        h1.display-4.m-b-2 Ejercicios
+        div.row.col-md-12
+          div.row
+            div.col-md-4
+              div.exercise-item
+                btn.btn.btn-secondary.boton-nuevo
+                  a(href='/ejercicios/crear') +
+            each e in exercise
+              div.col-md-4
+                div.exercise-item
+                  div
+                    img.exercise-image(src=e.gif, alt=e.title + - + 'Gif')
+                  div.exercise-texts
+                    h1= e.title
+                    p= e.description
+                    p= e.category 
+                  a(href='/ejercicios/' + e.id + '/editar') 
+                    button.btn.btn-warning Editar
+                  a(href='/ejercicios/' + e.id + '/eliminar') 
+                    button.btn.btn-danger(type='submit') Eliminar

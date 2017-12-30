@@ -1,0 +1,50 @@
+extends layout
+
+block content
+  .main.container
+    .row
+      .col-md-12
+        h1.display-4.m-b-2 Editar Ejercicio
+      
+        // register form
+        form(method='POST' action='/ejercicios/editar' enctype='multipart/form-data')
+          div.form-group.col-md-12
+            label(for='title') Título:
+            input#title.form-control(type='text', placeholder='Título' name='title' value=exercise.title)
+          div.form-group.col-md-12
+            label(for='description') Descripción:
+            textarea#description.form-control(type='text', placeholder='Descripción' name='description') #{exercise.description}
+          div.form-group.col-md-12
+            label(for='category') Categoría:
+            input#category.form-control(type='text', placeholder='Categoría' name='category' value=exercise.category)
+          div.row.col-md-12
+            button.btn.btn-primary(type='submit') Crear
+          if exercise.id
+        form(method='POST', enctype="multipart/form-data", action='/ejercicios/' + exercise.id + '/subir/thumbnail')
+          input(type='hidden' name='exerciseId' value=exercise.id)
+          div.form-group.col-md-4
+            label(for='video_thumbnail') Thumbnail:
+            if exercise.jpg
+              img(src=exercise.jpg, alt='Thumbnail', style="width: 200px;")
+            input#video_thumbnail.form-control(type='file', name='video_thumbnail')
+            button.btn.btn-primary(type='submit') Subir
+        form(method='POST', enctype="multipart/form-data", action='/ejercicios/' + exercise.id + '/subir/gif')           
+          div.form-group.col-md-4
+            label(for='gif_url') Gif:
+            if exercise.gif
+              img(src=exercise.gif, alt='Gif', style="width: 200px;")
+            input#gif_url.form-control(type='file', name='gif_url')
+            input#exercise_id(type='hidden', name='exercise_id', value=exercise.id)
+            button.btn.btn-primary(type='submit') Subir
+        form(method='POST', enctype="multipart/form-data", action='/ejercicios/' + exercise.id + '/subir/video')                      
+          div.form-group.col-md-4
+            label(for='video_url') Video:
+            if exercise.video
+            video(src=exercise.video, width='200' height='200' controls)
+            input#video_url.form-control(type='file', name='video_url')
+            button.btn.btn-primary(type='submit') Subir
+          div.col-md-6
+            
+          
+
+      

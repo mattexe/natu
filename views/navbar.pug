@@ -8,10 +8,10 @@ nav.navbar.navbar-fixed-top.navbar-dark.bg-inverse
           | Naturvitia
         .nav-items.clearfix
           if currentUser
-            a.nav-item.nav-link(href='usuarios') Usuarios
-            a.nav-item.nav-link(href='about') Ejercicios
-            a.nav-item.nav-link(href='contact') Notas
-            a.nav-item.nav-link(href='dashboard') Dashboard
+            a.nav-item.nav-link(href='/usuarios') Usuarios
+            a.nav-item.nav-link(href='/ejercicios') Ejercicios
+            a.nav-item.nav-link(href='/notas') Notas
+            a.nav-item.nav-link(href='/dashboard') Dashboard
         if currentUser
           div
             img.avatar.img-circle.hidden-xs-down(src='/images/avatar.png', alt='avatar')
@@ -23,15 +23,8 @@ nav.navbar.navbar-fixed-top.navbar-dark.bg-inverse
           i.icn-logo.material-icons bookmark_border
           | Naturvitia
         .nav-items.clearfix
-          if currentUser
-            a.nav-item.nav-link(href='register') Usuarios
-            a.nav-item.nav-link(href='about') Ejercicios
-            a.nav-item.nav-link(href='contact') Notas
-            a.nav-item.nav-link(href='profile') My Profile
           
         if currentUser
           div
             img.avatar.img-circle.hidden-xs-down(src='/images/avatar.png', alt='avatar')
             a.btn.btn-light.pull-md-right(href='/logout') Log out
-        else  
-          a.btn.btn-info.pull-md-right(href='login') Login

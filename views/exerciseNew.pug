@@ -1,0 +1,23 @@
+extends layout
+
+block content
+  .main.container
+    .row
+      .col-md-12
+        h1.display-4.m-b-2 Crear nuevo Ejercicio
+      
+        // register form
+        form(method='POST' action='/ejercicios/crear' enctype='multipart/form-data')
+          div.form-group.col-md-12
+            label(for='title') Título:
+            input#title.form-control(type='text', placeholder='Título' name='title')
+          div.form-group.col-md-12
+            label(for='description') Descripción:
+            textarea#description.form-control(type='text', placeholder='Descripción' name='description')
+          div.form-group.col-md-12
+            label(for='category') Categoría:
+            input#category.form-control(type='text', placeholder='Categoría' name='category')
+          div.row.col-md-12
+            button.btn.btn-primary(type='submit') Crear
+
+      
