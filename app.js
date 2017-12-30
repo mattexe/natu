@@ -6,7 +6,13 @@ var MongoStore = require('connect-mongo')(session);
 var app = express();
 
 // mongodb connection
-mongoose.connect("mongodb://localhost:27017/naturdb");
+//mongoose.connect("mongodb://localhost:27017/naturdb");
+mongoose.connect("mongodb://admin:HXHvgy22861@https://mongodb19588-naturvitia.jelastic.cloudhosted.es:27017/naturdb", function(err, db) {
+if(!err) {
+    console.log("You are connected!");
+  };
+db.close();
+});
 var db = mongoose.connection;
 // mongo error
 db.on('error', console.error.bind(console, 'connection error:'));
