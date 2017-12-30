@@ -7,7 +7,10 @@ var app = express();
 
 // mongodb connection
 //mongoose.connect("mongodb://localhost:27017/naturdb");
-mongoose.connect('mongodb://admin:HXHvgy22861@https://mongodb19588-naturvitia.jelastic.cloudhosted.es:27017/naturdb?');
+mongoose.connect('mongodb://admin:HXHvgy22861@mongodb19588-naturvitia.jelastic.cloudhosted.es:27017/naturdb');
+var db = mongoose.connection;
+// mongo error
+db.on('error', console.error.bind(console, 'connection error:'));
 
 // use sessions for tracking logins
 app.use(session({

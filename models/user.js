@@ -38,7 +38,6 @@ var UserSchema = new mongoose.Schema({
     },
     owner: {
       type: String,
-      required: true
     }
 });
 // authenticate input against database documents
