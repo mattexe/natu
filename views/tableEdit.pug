@@ -29,30 +29,31 @@ block content
                     div.page-separator
                       h4 #{ti.item_title}
                   else
-                    if ti.size <= 1
-                      div.card(style="width: 23%; margin: 1%; height: 20%; float: left; background-color:" + ti.color)
-                        div.card-body
-                            h6#item_title.card-title #{ti.item_title}
-                            div.card-text-note(style="font-size: 12px;") 
-                              | !{ti.item_description}
-                    else if ti.size == 2
-                      div.card(style="width: 46%; margin: 1%; height: 20%; float: left; background-color:" + ti.color)
-                        div.card-body
-                            h6#item_title.card-title #{ti.item_title}
-                            div.card-text-note(style="font-size: 12px;") 
-                              | !{ti.item_description}
-                    else if ti.size == 3
-                      div.card(style="width: 69%; margin: 1%; height: 20%; float: left; background-color:" + ti.color)
-                        div.card-body
-                            h6#item_title.card-title #{ti.item_title}
-                            div.card-text-note(style="font-size: 12px;") 
-                              | !{ti.item_description}
-                    else if ti.size >= 4
-                      div.card(style="width: 98%; margin: 1%; height: 20%; float: left; background-color:" + ti.color)
-                        div.card-body
-                            h6#item_title.card-title #{ti.item_title}
-                            div.card-text-note(style="font-size: 12px;") 
-                              | !{ti.item_description}
+                    if ti.type == 'Note'
+                      if ti.size == 1
+                        div.card(style="width: 23%; margin: 1%; height: 20%; float: left; background-color:" + ti.color)
+                          div.card-body
+                              h6#item_title.card-title #{ti.item_title}
+                              div.card-text-note(style="font-size: 12px;") 
+                                | !{ti.item_description}
+                      else if ti.size == 2
+                        div.card(style="width: 46%; margin: 1%; height: 20%; float: left; background-color:" + ti.color)
+                          div.card-body
+                              h6#item_title.card-title #{ti.item_title}
+                              div.card-text-note(style="font-size: 12px;") 
+                                | !{ti.item_description}
+                      else if ti.size == 3
+                        div.card(style="width: 69%; margin: 1%; height: 20%; float: left; background-color:" + ti.color)
+                          div.card-body
+                              h6#item_title.card-title #{ti.item_title}
+                              div.card-text-note(style="font-size: 12px;") 
+                                | !{ti.item_description}
+                      else if ti.size >= 4
+                        div.card(style="width: 98%; margin: 1%; height: 20%; float: left; background-color:" + ti.color)
+                          div.card-body
+                              h6#item_title.card-title #{ti.item_title}
+                              div.card-text-note(style="font-size: 12px;") 
+                                | !{ti.item_description}
                     else
                       div.card(style="width: 23%; margin: 1%; height: 20%; float: left; background-color:" + ti.color)
                         img.card-img-top(src=ti.item_image, style="display:cover;")
