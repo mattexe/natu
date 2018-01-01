@@ -135,6 +135,18 @@ router.get('/usuarios/:id/editar/', function(req, res, next) {
         };
       });
 });
+// Ver usuario
+router.get('/usuario/:id/', function(req, res, next) {
+  User.findOne({_id: req.params.id}, function (error, user) {
+        if (error) {
+          return next(error);
+        }else{
+          Table.find({client: req.params.id}).sort({dateCreated: 'desc'}).limit().exec(function(error, table) {
+            return res.render('usersProfile', { title: 'Perfil de Usuario', user: user, table: table });
+          });
+        };
+      });
+});
 // Guardar usuario Editado
 router.post('/usuarios/editar/', function(req, res, next) {
   if (req.body.email &&
@@ -377,6 +389,7 @@ Exercise.findOne({ _id: req.params.id }, function (err, doc){
 router.post('/ejercicios/:id/subir/video', upload.single('video_url'), function (req, res) {
 Exercise.findOne({ _id: req.params.id }, function (err, doc){
   doc.video = '/' + req.file.path;
+  doc.originalId = req.file.originalname;
   doc.save();
   if (err) { 
           return next(err);
@@ -570,39 +583,44 @@ router.get('/tabla/eliminar/:id/', function(req, res, next) {
 
 // Nuevo item de tabla /tabla/" + table.id + "/new/item/
 router.post('/tabla/:id/nuevo/item/', function(req, res, next){
-  var item_title;
-  var item_description;
-  var item_image;
-  var item_gif;
-  var item_video;
+  var position = 0;
+  TableItem.find({id_tabla: req.params.id}).sort({_id: -1}).limit(1).exec(function (error, tableItem) {
+    position = tableItem.position;
+    console.log(position);
 
-  Exercise.findOne({_id: req.body.item_id}, function(error, exercise) {
-    item_title = exercise.title;
-    item_description = exercise.description;
-    item_image = exercise.jpg;
-    item_gif = exercise.gif;
-    item_video = exercise.video;
+  if (req.body.item_type == 'Exercise') {
+    var item_title;
+    var item_description;
+    var item_image; 
+    var item_gif;
+    var item_video;
 
-    var tableItemData = {
-        id_tabla: req.params.id,
-        size: req.body.columns_number,
-        item_id: req.body.item_id,
-        color: '#ffffff',
-        type: req.body.type,
-        sessions: req.body.sessions,
-        repetitions: req.body.repetitions,
-        weight: req.body.weight,
-        time: req.body.time + " " + req.body.time_unit,
-        dateCreated: Date.now(),
-        item_title: item_title,
-        item_description: item_description,
-        item_image: item_image,
-        item_gif: item_gif,
-        item_video: item_video
-      };
-      console.log(tableItemData);
+    Exercise.findOne({_id: req.body.item_id}, function(error, exercise) {
+      item_title = exercise.title;
+      item_description = exercise.description;
+      item_image = exercise.jpg;
+      item_gif = exercise.gif;
+      item_video = exercise.video;
 
-    // use schema's `create` method to insert document into Mongo
+      var tableItemData = {
+          id_tabla: req.params.id,
+          size: req.body.columns_number,
+          item_id: req.body.item_id,
+          color: '#ffffff',
+          type: req.body.item_type,
+          sessions: req.body.sessions,
+          repetitions: req.body.repetitions,
+          weight: req.body.weight,
+          time: req.body.time + " " + req.body.time_unit,
+          dateCreated: Date.now(),
+          item_title: item_title,
+          item_description: item_description,
+          item_image: item_image,
+          item_gif: item_gif,
+          item_video: item_video,
+          position: position
+        }
+      // use schema's `create` method to insert document into Mongo
       TableItem.create(tableItemData, function (error, tableItem) {
         if (error) {
           return next(error);
@@ -612,8 +630,71 @@ router.post('/tabla/:id/nuevo/item/', function(req, res, next){
             });
         }
       });
+    });
+  } else if (req.body.item_type == 'Note') {
+    Note.findOne({_id: req.body.item_id}, function(error, note) {
+      item_title = note.title;
+      item_description = note.description;
+      var tableItemData = {
+          id_tabla: req.params.id,
+          size: req.body.columns_number,
+          item_id: req.body.item_id,
+          color: '#ffffff',
+          type: req.body.item_type,
+          sessions: null,
+          repetitions: null,
+          weight: null,
+          time: null,
+          dateCreated: Date.now(),
+          item_title: item_title,
+          item_description: item_description,
+          item_image: item_image,
+          item_gif: null,
+          item_video: null,
+          position: position
+      };
+    // use schema's `create` method to insert document into Mongo
+      TableItem.create(tableItemData, function (error, tableItem) {
+        if (error) {
+          return next(error);
+        } else {
+           Table.find().exec(function (error, table) {
+          return res.redirect('/tabla/' + req.params.id + '/');
+            });
+        }
+      }); 
   });
-})
+  } else if (req.body.item_type == 'Separator') {
+        var tableItemData = {
+          id_tabla: req.params.id,
+          item_id: req.body.item_id,
+          color: '#ffffff',
+          type: req.body.item_type,
+          sessions: null,
+          repetitions: null,
+          weight: null,
+          time: null,
+          dateCreated: Date.now(),
+          item_title: req.body.item_title,
+          item_description: null,
+          item_gif: null,
+          item_video: null,
+          position: position
+        };
+      // use schema's `create` method to insert document into Mongo
+      TableItem.create(tableItemData, function (error, tableItem) {
+        if (error) {
+          return next(error);
+        } else {
+           Table.find().exec(function (error, table) {
+          return res.redirect('/tabla/' + req.params.id + '/');
+            });
+        }
+      });
+  };
+});
+
+});
 // Editar Table Item
 router.get('/tabla/item/:id/', function(req, res, next) {
   TableItem.findOne({_id: req.params.id}, function (error, tableItem) { 
@@ -626,6 +707,7 @@ router.get('/tabla/item/:id/', function(req, res, next) {
 });
 // Editar item de tabla /tabla/" + table.id + "/new/item/
 router.post('/tabla/editar/item/:id/', function(req, res, next){
+  if (req.body.type == 'Exercise') {
 
     var tableItemData = {
         id_tabla: req.body.id_tabla,
@@ -644,8 +726,26 @@ router.post('/tabla/editar/item/:id/', function(req, res, next){
         item_gif: req.body.item_gif,
         item_video: req.body.item_video
       };
-      console.log(tableItemData);
-
+    }else if (req.body.type == 'Note') {
+      var tableItemData = {
+        id_tabla: req.body.id_tabla,
+        size: req.body.columns_number,
+        item_id: req.body.item_id,
+        color: req.body.colors,
+        type: req.body.type,
+        dateCreated: Date.now(),
+        item_title: req.body.item_title,
+        item_description: req.body.item_description
+      };
+    }else{
+      var tableItemData = {
+        id_tabla: req.body.id_tabla,
+        item_id: req.body.item_id,
+        type: req.body.type,
+        dateCreated: Date.now(),
+        item_title: req.body.item_title,
+      };
+    }
     // use schema's `create` method to insert document into Mongo
       TableItem.findByIdAndUpdate(req.params.id, tableItemData, function (error, tableItem) {
         if (error) {

@@ -11,6 +11,10 @@ var ExerciseSchema = new mongoose.Schema({
       required: true,
       trim: true
     },
+    originalId: {
+      type: String,
+      trim: true
+    },
     video: {
       type: String,
       required: false,

@@ -4,57 +4,79 @@ block content
   .main.container
     .row
       .col-md-12
-        h1.display-4.m-b-2 Nueva Tabla.
+        h1.display-4.m-b-2 Nueva Tabla
         div.row(style="text-align: center;")
           div.col-md-12
             div.btn-group(role="group")
               a.btn.btn-secondary(data-toggle="modal", data-target="#note") Editar Cabecera
-              a.btn.btn-secondary(data-toggle="modal", data-target="#note") + Separador
+              a.btn.btn-secondary(data-toggle="modal", data-target="#separator") + Separador
               a.btn.btn-secondary(data-toggle="modal", data-target="#exercise") + Ejercicio
               a.btn.btn-secondary(data-toggle="modal", data-target="#note") + Nota
-              a.btn.btn-secondary(data-toggle="modal", data-target="#note") Marcar como Plantilla
-              a.btn.btn-danger(data-toggle="modal", data-target="#note") Eliminar Tabla
+              a.btn.btn-secondary(href="#") Marcar como Plantilla
+              a.btn.btn-danger(href="#") Eliminar Tabla
         div.row
           div.page
             div.page-header
               h1 Naturvitia
-              p #{table.description}
+              | !{table.description}
             div.page-separator
               h4 Día 1
             div.page-body
               each ti in tableItem
                 a(href='/tabla/item/' + ti.id + "/")
-                  div.card(style="width: 23%; margin: 1%; height: 20%; float: left; background-color:" + ti.color)
-                    img.card-img-top(src=ti.item_image, style="display:cover;")
-                    div.card-body
-                    h6#item_title.card-title #{ti.item_title}
-                    p.card-text(style="font-size: 12px;") #{ti.item_description}
-                    div.data-grid
-                      div.col-md-3.data-item
-                        p S
-                      div.col-md-3.data-item
-                        p R
-                      div.col-md-3.data-item
-                        p P
-                      div.col-md-3.data-item
-                        p T
-                      div.col-md-3.data-item
-                        p #{ti.sessions}
-                      div.col-md-3.data-item
-                        p #{ti.repetitions}
-                      div.col-md-3.data-item
-                        p #{ti.weight}
-                      div.col-md-3.data-item
-                        p #{ti.time}
-              div.card(style="width: 23%; margin: 1%; height: 20%; float: left;")
-                img.card-img-top(src="/uploads/gif/gif_url-1513174900922.gif", style="display:cover;")
-                div.card-body
-                  h6.card-title Titulo del Item
-                  p.card-text Texto de ejemplo
-                div.fixed-bottom
-                  div.btn-group.item-buttons(role="group")
-                    a.btn.btn-secondary.btn-sm(data-toggle="modal", data-target="#exercise") Ejercicio
-                    a.btn.btn-secondary.btn-sm(data-toggle="modal", data-target="#note") Nota
+                  //-if ti.size <= 1 && ti.type = Notas
+                  if ti.type == 'Separator'
+                    div.page-separator
+                      h4 #{ti.item_title}
+                  else
+                    if ti.size <= 1
+                      div.card(style="width: 23%; margin: 1%; height: 20%; float: left; background-color:" + ti.color)
+                        div.card-body
+                            h6#item_title.card-title #{ti.item_title}
+                            div.card-text-note(style="font-size: 12px;") 
+                              | !{ti.item_description}
+                    else if ti.size == 2
+                      div.card(style="width: 46%; margin: 1%; height: 20%; float: left; background-color:" + ti.color)
+                        div.card-body
+                            h6#item_title.card-title #{ti.item_title}
+                            div.card-text-note(style="font-size: 12px;") 
+                              | !{ti.item_description}
+                    else if ti.size == 3
+                      div.card(style="width: 69%; margin: 1%; height: 20%; float: left; background-color:" + ti.color)
+                        div.card-body
+                            h6#item_title.card-title #{ti.item_title}
+                            div.card-text-note(style="font-size: 12px;") 
+                              | !{ti.item_description}
+                    else if ti.size >= 4
+                      div.card(style="width: 98%; margin: 1%; height: 20%; float: left; background-color:" + ti.color)
+                        div.card-body
+                            h6#item_title.card-title #{ti.item_title}
+                            div.card-text-note(style="font-size: 12px;") 
+                              | !{ti.item_description}
+                    else
+                      div.card(style="width: 23%; margin: 1%; height: 20%; float: left; background-color:" + ti.color)
+                        img.card-img-top(src=ti.item_image, style="display:cover;")
+                        div.card-body
+                          div.card-text
+                            h6#item_title.card-title #{ti.item_title}
+                            p.card-text(style="font-size: 12px;") #{ti.item_description}
+                        div.data-grid
+                          div.col-md-3.data-item
+                            p S
+                          div.col-md-3.data-item
+                            p R
+                          div.col-md-3.data-item
+                            p P
+                          div.col-md-3.data-item
+                            p T
+                          div.col-md-3.data-item
+                            p #{ti.sessions}
+                          div.col-md-3.data-item
+                            p #{ti.repetitions}
+                          div.col-md-3.data-item
+                            p #{ti.weight}
+                          div.col-md-3.data-item
+                            p #{ti.time}
   div#exercise.modal.fade(role="dialog", tabindex="-1" aria-labelledby="exercise", aria-hidden="true")
     div.modal-dialog(role="document")
       div.modal-content
@@ -88,7 +110,7 @@ block content
               select.col-md-2(name='time_unit')
                 option(value='S') Segundos
                 option(value='M') Minutos
-              input(type="hidden" name="type" value="exercise")
+              input(type="hidden" name="item_type" value="Exercise")
             div.form-group.col-md-12
              button.btn.btn-primary(type="submit" name="submit") Guardar
              div.etc
@@ -103,45 +125,38 @@ block content
           button(type="button" class="close" data-dismiss="modal" aria-label="Close")
             span(aria-hidden="true")
         div.modal-body
-          form#exercise-form(method="POST" action="/tabla/" + table.id + "/nuevo/item/")
-            div.form-group.col-md-6
-              label(for='columns_number') Número de columnas
-              select(name='columns_number').form-control
-                option(value='1') 1
-                option(value='2') 2
-                option(value='3') 3
-                option(value='4') 4
+          form#note-form(method="POST" action="/tabla/" + table.id + "/nuevo/item/")
             div.form-group.col-md-6
               label(for='colors') Color de fondo
-              select(name='colors').form-control
-                option(value='Verde') Verde
-                option(value='Amarillo') Amarillo
-                option(value='Rojo') Rojo
+              input.form-control(type='color', name='colors')
+            div.form-group.col-md-6
+              label(for='columns_number') Número de columnas
+              input(type='number', name='columns_number')
             div.form-group.col-md-12
-                each e in exercise
-                    .radio
-                      label
-                      input(type='radio', name='item_id', value=e.id)
-                      | Ejercicio: #{e.title}
-            div.form-group
-              label.col-md-4 Sesiones
-              input.col-md-2(type="number" name="sessions")
-            div.form-group
-              label.col-md-4 Repeticiones
-              input.col-md-2(type="number" name="repetitions")
-            div.form-group
-              label.col-md-4 Peso
-              input.col-md-2(type="number" name="weight")
-            div.form-group
-              label.col-md-2 Tiempo
-              input.col-md-2(type="number" name="time")
-              select.col-md-2(name='time_unit')
-                option(value='S') Segundos
-                option(value='M') Minutos
-              input(type="hidden" name="type" value="exercise")
+              each n in note
+                  .radio
+                    label
+                    input(type='radio', name='item_id', value=n.id)
+                    | Nota: #{n.title}
+              input(type="hidden" name="item_type" value="Note")
             div.form-group.col-md-12
-             button.btn.btn-primary(type="submit" name="submit") Guardar
-             div.etc
+            button.btn.btn-primary(type="submit" name="submit") Guardar
+        div.modal-footer.col-md-12
+          btn.btn.btn-secondary(type="button" data-dismiss="modal") Close
+  div#separator.modal.fade(role="dialog", tabindex="-1" aria-labelledby="separator", aria-hidden="true")
+    div.modal-dialog(role="document")
+      div.modal-content
+        div.modal-header
+          h5.modal-title Añadir separador
+          button(type="button" class="close" data-dismiss="modal" aria-label="Close")
+            span(aria-hidden="true")
+        div.modal-body(style='height:164px;')
+          form#separator-form(method="POST" action="/tabla/" + table.id + "/nuevo/item/")
+            div.form-group.col-md-12
+              label(for='item_title') Título para el Separador
+              input.form-control(type='text', name='item_title')
+              input(type="hidden" name="item_type" value="Separator")
+            button.btn.btn-primary(type="submit" name="submit") Guardar
         div.modal-footer.col-md-12
           btn.btn.btn-secondary(type="button" data-dismiss="modal") Close
   

@@ -15,7 +15,8 @@ block content
               div.col-md-4
                 div.user-item
                   div.user-texts
-                    h1= u.name + ' ' + u.lastname
+                    a(href='/usuario/' + u.id)
+                      h1= u.name + ' ' + u.lastname
                     p= u.username
                     p= u.email
                     p= u.typeOfUser

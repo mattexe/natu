@@ -7,10 +7,11 @@ block content
         h1.display-4.m-b-2 Editar #{tableItem.item_title}
         div
           form#exercise-form(method="POST" action="/tabla/editar/item/" + tableItem.id)
-            div.form-group.row
-              label.col-md-3.col-form-label Imagen
-              div.col-md-9
-                img.col-md-12(src=tableItem.item_image)
+            if tableItem.type == 'Exercise'
+              div.form-group.row
+                label.col-md-3.col-form-label Imagen
+                div.col-md-9
+                  img.col-md-12(src=tableItem.item_image)
             div.form-group.row
               label.col-md-3.col-form-label(for='item_title') Título
               div.col-md-9
@@ -18,7 +19,7 @@ block content
             div.form-group.row
               label.col-md-3.col-form-label(for='item_description') Descripción
               div.col-md-9
-                textarea.form-control(name='item_description') #{tableItem.item_description}
+                textarea.form-control(name='item_description' id='item_description') #{tableItem.item_description}
             div.form-group.row
               label.col-md-3.col-form-label(for='columns_number') Número de columnas
               div.col-md-9
@@ -27,30 +28,31 @@ block content
               label.col-md-3.col-form-label(for='colors') Color de fondo
               div.col-md-9
                 input.form-control(type='color' name='colors' value=tableItem.color)
-            div.form-group.row
-              label.col-md-3.col-form-label(for='sessions') Sesiones
-              div.col-md-9
-                input.form-control(type="number" name="sessions" value=tableItem.sessions)
-            div.form-group.row
-              label.col-md-3.col-form-label(for='repetitions') Repeticiones
-              div.col-md-9
-                input.form-control(type="number" name="repetitions" value=tableItem.repetitions)
-            div.form-group.row
-              label.col-md-3.col-form-label(for='weight') Peso
-              div.col-md-9
-                input.form-control(type="number" name="weight" value=tableItem.weight)
-            div.form-group.row
-              label.col-md-3.col-form-label(form='time') Tiempo
-              div.col-md-5
-                input.form-control(type="text" name="time" value=tableItem.time)
-              select.col-md-4(name='time_unit')
-                option(value='S') Segundos
-                option(value='M') Minutos
-              input(type="hidden" name="type" value="Exercise")
-              input(type="hidden" name="item_image" value=tableItem.item_image)
-              input(type="hidden" name="item_gif" value=tableItem.item_gif)
-              input(type="hidden" name="item_video" value=tableItem.item_video)
-              input(type="hidden" name="id_tabla" value=tableItem.id_tabla)
+            if tableItem.type == 'Exercise'
+              div.form-group.row
+                label.col-md-3.col-form-label(for='sessions') Series
+                div.col-md-9
+                  input.form-control(type="number" name="sessions" value=tableItem.sessions)
+              div.form-group.row
+                label.col-md-3.col-form-label(for='repetitions') Repeticiones
+                div.col-md-9
+                  input.form-control(type="number" name="repetitions" value=tableItem.repetitions)
+              div.form-group.row
+                label.col-md-3.col-form-label(for='weight') Peso
+                div.col-md-9
+                  input.form-control(type="number" name="weight" value=tableItem.weight)
+              div.form-group.row
+                label.col-md-3.col-form-label(form='time') Tiempo
+                div.col-md-5
+                  input.form-control(type="text" name="time" value=tableItem.time)
+                select.col-md-4(name='time_unit')
+                  option(value='S') Segundos
+                  option(value='M') Minutos
+            input(type="hidden" name="type" value=tableItem.type)
+            input(type="hidden" name="item_image" value=tableItem.item_image)
+            input(type="hidden" name="item_gif" value=tableItem.item_gif)
+            input(type="hidden" name="item_video" value=tableItem.item_video)
+            input(type="hidden" name="id_tabla" value=tableItem.id_tabla)
 
 
             div.row
