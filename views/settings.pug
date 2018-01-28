@@ -1,0 +1,33 @@
+extends layout
+
+block content
+  .main.container
+    .row
+      .col-md-12
+        h1.display-4.m-b-2 Settings
+        div.row.col-md-12
+          div.mybloques
+            h4 Configuración de la Web
+          div.mybloques
+            h4 Configuración de Usuarios
+          div.mybloques
+            h4 Configuración de Notas
+          div.mybloques
+            h4 Configuración de Ejercicios
+            h6 Categorías
+            if !eCategory
+            else
+              ul
+                each cat in eCategory
+                  li #{cat.title}
+                  button.btn.btn-danger Eliminar
+            form(action="/settings/categorias", method="post")
+              div.form-group.row
+                label.col-md-3.col-form-label(for='category_title') Título
+                div.col-md-9
+                  input.form-control(name='category_title')
+              div.form-group.row
+                label.col-md-3.col-form-label(for='category_description') Descripción
+                div.col-md-9
+                  textarea.form-control(name='category_description')
+              button.btn.btn-primary(type="submit") Guardar

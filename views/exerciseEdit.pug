@@ -7,7 +7,7 @@ block content
         h1.display-4.m-b-2 Editar Ejercicio
       
         // register form
-        form(method='POST' action='/ejercicios/editar' enctype='multipart/form-data')
+        form(method='POST' action='/ejercicios/' + exercise.id + '/editar/')
           div.form-group.col-md-12
             label(for='title') Título:
             input#title.form-control(type='text', placeholder='Título' name='title' value=exercise.title)
@@ -18,7 +18,7 @@ block content
             label(for='category') Categoría:
             input#category.form-control(type='text', placeholder='Categoría' name='category' value=exercise.category)
           div.row.col-md-12
-            button.btn.btn-primary(type='submit') Crear
+            button.btn.btn-primary(type='submit') Guardar
           if exercise.id
         form(method='POST', enctype="multipart/form-data", action='/ejercicios/' + exercise.id + '/subir/thumbnail')
           input(type='hidden' name='exerciseId' value=exercise.id)

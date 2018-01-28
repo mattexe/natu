@@ -45,15 +45,13 @@ block content
                 label.col-md-3.col-form-label(form='time') Tiempo
                 div.col-md-5
                   input.form-control(type="text" name="time" value=tableItem.time)
-                select.col-md-4(name='time_unit')
-                  option(value='S') Segundos
-                  option(value='M') Minutos
             input(type="hidden" name="type" value=tableItem.type)
             input(type="hidden" name="item_image" value=tableItem.item_image)
             input(type="hidden" name="item_gif" value=tableItem.item_gif)
             input(type="hidden" name="item_video" value=tableItem.item_video)
             input(type="hidden" name="id_tabla" value=tableItem.id_tabla)
             input(type="hidden" name="item_id" value=tableItem.item_id)
+            input(type="hidden" name="position" value=tableItem.position)
 
 
             div.row

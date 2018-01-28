@@ -5,20 +5,35 @@ block content
     .row
       .col-md-12
         h1.display-4.m-b-2 Usuario: #{user.name} #{user.lastname}
-          div.form-group.col-md-12
-            h4 Usuario: #{user.username}
-        div.form-group.col-md-12
-            h4 Email:  #{user.email}
-        div.form-group.col-md-6
-           h4 Tipo de Usuario:  #{user.typeOfUser}
-        div.form-group.col-md-12
-            h4 Creado: #{user.dateCreated}
-        div.form-group.col-md-12
-            h1 Tablas del Usuario
-        div.form-group.col-md-12
-            a.btn.btn-secondary(href='/tabla/nueva/' + user.id + '/') Nueva Tabla
-            each t in table
+        .mybloques
+          div.form-group
+            p Usuario: #{user.username}
+          div.form-group
+            p Email: #{user.email}
+          div.form-grou
+            p Tipo de Usuario: #{user.typeOfUser}
+          div.form-group
+            p Creado: #{user.dateCreated}
+        .mybloques
+            div.form-group
+              h3 Tablas del usuario
+            div.form-group
+              a.btn.btn-secondary(href='/tabla/nueva/' + user.id + '/') Nueva Tabla
+        .mybloques
+          each t in table
                 ul
                   li
-                    a(style="color: #fff").form-group.col-md-10(href="/tabla/" + t.id + "/") Tabla: #{t.title} - #{t.dateCreated}
+                    a.form-group.col-md-10(href="/tabla/" + t.id + "/") Tabla: #{t.title} - #{t.dateCreated}
                     a.col-md-2.btn.btn-danger(href='/tabla/eliminar/' + t.id) Eliminar
+        .mybloques
+            div.form-group
+              h3 Dietas del Usuario
+            div.form-group
+              a.btn.btn-secondary(href='/tabla/nueva/' + user.id + '/') Nueva Tabla
+        .mybloques
+          each t in table
+                ul
+                  li
+                    a.form-group.col-md-10(href="/tabla/" + t.id + "/") Tabla: #{t.title} - #{t.dateCreated}
+                    a.col-md-2.btn.btn-danger(href='/tabla/eliminar/' + t.id) Eliminar
+              

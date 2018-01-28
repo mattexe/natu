@@ -1,12 +1,121 @@
 extends layout
 
 block content
+	script(type='text/javascript').
+		"use strict";
+
+		(function( $ ) {
+		    $(function() {
+		        $( "#q" ).bootcomplete({
+		          url: "/search",
+		          method: "post"
+		        });
+				    });
+				})( jQuery );
+
 	.main.container.clearfix
 		.row
 			h1.display-4 Dashboard
 			.row
-				.col-md-8.col-md-offset-2
-					div.form-group
-						h1 Buscar Usuario
-						input#name.form-control(type='text', placeholder='Nombre de Usuario' name='name')
+				div.bienvenida
+					if user.typeOfUser == 'SuperAdmin'
+						h1 Bienvenido SuperAdmin #{user.name}
+					if user.typeOfUser == 'Admin'
+						h1 Bienvenido Admin #{user.name}
+					if user.typeOfUser == 'Collaborator'
+						h1 Bienvenido Colaborador #{user.name}
+					if user.typeOfUser == 'Client'
+						h1 Bienvenido #{user.name}
+				if user.typeOfUser == 'SuperAdmin' || user.typeOfUser == 'Admin' || user.typeOfUser == 'Collaborator'		
+					.buscador
+						h3(style="text-align: center") Buscador de usuarios
+						ul#users
+							if !users
 
+							else
+								each us in users
+									li
+										i.fa.fa-user
+										span #{us.name} #{us.lastname}
+							form#search.col-md-12(method="post", action="")
+								input#q.col-md-10.form-control(type="text", placeholder="Buscar..." )
+								button.btn.btn-primary.col-md-2(type="submit") Ver usuario
+			.mybloques
+				.list
+				if user.typeOfUser == 'SuperAdmin'
+					h3 Mis Admins (#{adminUser.length})
+					if adminUser.length === 0
+						p Aún no tienes Admins
+					else
+						.row
+						each au in adminUser
+							.col-md-6
+								p=au.name + " " + au.lastname + " - Usuario: " + au.username
+							.col-md-6
+								p=au.dateCreated
+			.mybloques
+				.list
+				if user.typeOfUser == 'SuperAdmin' || user.typeOfUser == 'Admin' 
+					h3 Mis Colaboradores (#{collaboratorUser.length})
+					if collaboratorUser.length === 0
+						p Aún no tienes Colaboradores
+					else
+						.row
+						each cu in collaboratorUser
+							.col-md-6
+								p=cu.name
+							.col-md-6
+								p=cu.dateCreated
+			.mybloques
+				.list
+				if user.typeOfUser == 'SuperAdmin' || user.typeOfUser == 'Admin' || user.typeOfUser == 'Collaborator'
+					h3 Mis Clientes (#{clientUser.length})
+					if clientUser.length === 0
+						p Aún no tienes Clientes
+					else
+						.row
+						each clu in clientUser
+							.col-md-6
+								p=clu.name
+							.col-md-6
+								p=clu.dateCreated
+			.mybloques
+				.list
+				if user.typeOfUser == 'SuperAdmin' || user.typeOfUser == 'Admin'
+					h3 Mis Plantillas (#{template.length})
+					if template.length === 0
+						p Aún no tienes Plantillas
+					else
+						.row
+						each tp in template
+							.col-md-6
+								a(href="/plantilla/" + tp.id)
+									p=tp.name
+							.col-md-6
+								p=tp.dateCreated
+			.mybloques
+				.list
+				if user.typeOfUser == 'SuperAdmin' || user.typeOfUser == 'Admin' || user.typeOfUser == 'Collaborator' || user.typeOfUser == 'Client'
+					h3 Mis Tablas (#{table.length})
+					if table.length === 0
+						p Aún no tienes Tablas
+					else
+						.row
+						each tb in table
+							.col-md-6
+								p=tb.title
+							.col-md-6
+								p=tb.dateCreated
+			.mybloques
+				.list
+				if user.typeOfUser == 'SuperAdmin' || user.typeOfUser == 'Admin' || user.typeOfUser == 'Collaborator' || user.typeOfUser == 'Client'
+					h3 Mis Dietas (#{table.length})
+					if table.length === 0
+						p Aún no tienes Dietas
+					else
+						.row
+						each tb in table
+							.col-md-6
+								p=tb.title
+							.col-md-6
+								p=tb.dateCreated

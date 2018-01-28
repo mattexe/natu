@@ -5,6 +5,9 @@ var Exercise = require('../models/exercises');
 var Note = require('../models/notes');
 var Table = require('../models/tables');
 var TableItem = require('../models/table_items');
+var TemplateTable = require('../models/template_table');
+var TemplateItem = require('../models/template_items');
+var ECats = require('../models/exercises_categories');
 var mid = require('../middleware');
 var multer = require('multer');
   bodyParser = require('body-parser');
@@ -51,18 +54,59 @@ var storage = multer.diskStorage({
 })
 
 var upload = multer({ storage: storage })
+// GET Settings
+router.get('/settings/', mid.requiresLogin, function(req, res, next) {
+  ECats.find().exec(function (error, eCategory) {
+    if (error) {
+      return next(error);
+    }else{
+      console.log(eCategory);
+      return res.render('settings', { title: 'Settings', eCategory: eCategory})
+    }
+});
+});
+//POST Exercises Categiras
+router.post('/settings/categorias', function(req, res, next) {
+  var eCat = {
+    title: req.body.category_title,
+    description: req.body.category_description
+  }
+ECats.create(eCat, function (error, eCategory) {
+    if (error) {
+      return next(error);
+    }else{
+      return res.redirect('/settings');
+    }
+  })
+});
 
 // GET /dashboard
-router.get('/dashboard', mid.requiresLogin, function(req, res, next) {
+router.get('/dashboard/', mid.requiresLogin, function(req, res, next) {
   User.findById(req.session.userId)
       .exec(function (error, user) {
+        User.find({owner: req.session.userId, typeOfUser: "Admin"}).sort({dateCreated: 'desc'})
+          .exec(function (error, adminUser) {
+            User.find({owner: req.session.userId, typeOfUser: "Collaborator"}).sort({dateCreated: 'desc'})
+              .exec(function (error, collaboratorUser) {
+                User.find({owner: req.session.userId, typeOfUser: "Client"}).sort({dateCreated: 'desc'})
+                  .exec(function (error, clientUser) {
+                    Table.find({owner: req.session.userId}).sort({dateCreated: 'desc'})
+                      .exec(function (error, table) {
+                        TemplateTable.find({owner: req.session.userId}).sort({dateCreated: 'desc'})
+                          .exec(function(error, template) {
+                            console.log('owner id: ' + req.session.userId);
         if (error) {
           return next(error);
         } else {
-          return res.render('dashboard', { title: 'Profile', name: user.name, favorite: user.favoriteBook });
+          return res.render('dashboard', { title: 'Profile', user: user, adminUser: adminUser, collaboratorUser: collaboratorUser, clientUser: clientUser, table: table, template: template });
         }
       });
+                  });
+                  });    
+      });
+  });
 });
+    });
 // GET /usuarios lista
 router.get('/usuarios/', function(req, res, next) {
   User.find()
@@ -112,7 +156,7 @@ router.post('/usuarios/crear/', function(req, res, next) {
         if (error) {
           return next(error);
         } else {
-          req.session.userId = user._id;
+          //req.session.userId = user._id;
           return res.redirect('/usuarios/');
         }
       });
@@ -166,9 +210,8 @@ router.post('/usuarios/editar/', function(req, res, next) {
       var userData = {
         email: req.body.email,
         name: req.body.name,
-        lastname: req.body.lastname,
-        typeOfUser: req.body.typeOfUser
-      };
+        lastname: req.body.lastname
+        };
 
       // use schema's `update` method to insert document into Mongo
       User.update(userData, function (error, user) {
@@ -268,7 +311,7 @@ router.get('/notas/:id/editar', function(req, res, next) {
       });
 });
 // POST /notas (editar nota)
-router.post('/notas/editar', function(req, res, next) {
+router.post('/notas/:id/editar', function(req, res, next) {
   if (req.body.title &&
     req.body.description &&
     req.body.category &&
@@ -287,6 +330,19 @@ router.post('/notas/editar', function(req, res, next) {
         if (error) {
           return next(error);
         } else {
+          TableItem.updateMany(
+            {"item_id": req.params.id},
+            {$set: {"item_title": req.body.title,
+            "item_description": req.body.description}
+
+            }, function (error, tableItem) {
+                if (error) {
+                  return next(error);
+                } else {
+                  console.log(req.body);
+                  console.log(tableItem);
+                }
+        });
           return res.redirect('/notas');
         }
       });
@@ -354,8 +410,19 @@ Exercise.findOne({ _id: req.params.id }, function (err, doc){
   if (err) {
           return next(err);
         } else {
+          TableItem.updateMany(
+            {"item_id":req.params.id},
+            {$set: {"item_gif": '/' + req.file.path}
+            }, function (error, tableItem) {
+                if (error) {
+                  return next(error);
+                } else {
+                  console.log(req.file);
+                  console.log(tableItem);
+                }
+        });
           return res.redirect('/ejercicios/' + req.params.id + '/editar');
-        }
+};
 });
 console.log(req.body); //form fields
   /* example output:
@@ -381,6 +448,17 @@ Exercise.findOne({ _id: req.params.id }, function (err, doc){
   if (err) {
           return next(err);
         } else {
+          TableItem.updateMany(
+            {"item_id": req.params.id},
+            {$set: {"item_image": '/' + req.file.path}
+            }, function (error, tableItem) {
+                if (error) {
+                  return next(error);
+                } else {
+                  console.log(req.file);
+                  console.log(tableItem);
+                }
+        });
           return res.redirect('/ejercicios/' + req.params.id + '/editar');
         }
 });
@@ -394,6 +472,17 @@ Exercise.findOne({ _id: req.params.id }, function (err, doc){
   if (err) { 
           return next(err);
         } else {
+          TableItem.updateMany(
+            {"item_id": req.params.id},
+            {$set: {"item_video": '/' + req.file.path}
+            }, function (error, tableItem) {
+                if (error) {
+                  return next(error);
+                } else {
+                  console.log(req.file);
+                  console.log(tableItem);
+                }
+        });
           return res.redirect('/ejercicios/' + req.params.id + '/editar');
         }
 });
@@ -435,7 +524,7 @@ router.post('/ejercicios/crear', multer({ dest: './public/images/uploads/'}).any
   });
 
 // Editar ejercicio
-router.get('/ejercicios/:id/editar', function(req, res, next) {
+router.get('/ejercicios/:id/editar/', function(req, res, next) {
   Exercise.findOne({_id: req.params.id}, function (error, exercise) {
         if (error) {
           return next(error);
@@ -444,6 +533,45 @@ router.get('/ejercicios/:id/editar', function(req, res, next) {
         };
       });
 });
+// Guardar Edición de Ejercicio
+router.post('/ejercicios/:id/editar/', function(req, res, next) {
+  
+  var exerciseData = {
+    title: req.body.title,
+    description: req.body.description,
+    category: req.body.category,
+    dateCreated: Date.now()
+  }
+  console.log(exerciseData);
+Exercise.update(exerciseData, function (error, exercise) {
+    if (error) {
+        return next(error);
+    } else {
+        TableItem.updateMany(
+        {"item_id": req.params.id},
+        {$set: {"dateCreated": Date.now(),
+        "item_title": req.body.title,
+        "item_description": req.body.description,
+        "category": req.body.category
+        }
+    }, function (error, tableItem) {
+      if (error) {
+        return next(error);
+      } else {
+        console.log(req.body);
+        console.log(tableItem);
+
+      }
+    });
+
+    return res.redirect('/ejercicios/' + req.params.id + '/editar/');
+    }
+  });
+});
+
+    
+        
+
 // Confirmar si Eliminar ejercicio 
 router.get('/ejercicios/:id/eliminar', function(req, res) {
   Exercise.findOne({_id: req.params.id}, function (error, exercise) {
@@ -539,7 +667,8 @@ router.post('/tabla/nueva/', function(req, res, next) {
         title: req.body.table_title,
         description: req.body.table_description,
         dateCreated: Date.now(),
-        dateModified: Date.now()
+        dateModified: Date.now(),
+        published: 'no'
       };
 
       // use schema's `create` method to insert document into Mongo
@@ -561,7 +690,7 @@ router.get('/tabla/:id/', function(req, res, next) {
             .exec(function (error, exercise) {
               Note.find()
                 .exec(function (error, note) {
-                    TableItem.find({id_tabla: req.params.id}).sort({dateCreated: 'desc'})
+                    TableItem.find({id_tabla: req.params.id}).sort({position: 'desc'})
                       .exec(function (error, tableItem) {
                         return res.render('tableEdit', { title: 'Editar Tabla', table: table, exercise: exercise, note: note, tableItem: tableItem});
                       });
@@ -583,17 +712,26 @@ router.get('/tabla/eliminar/:id/', function(req, res, next) {
 
 // Nuevo item de tabla /tabla/" + table.id + "/new/item/
 router.post('/tabla/:id/nuevo/item/', function(req, res, next){
-  var position = 0;
-  TableItem.find({id_tabla: req.params.id}).sort({_id: -1}).limit(1).exec(function (error, tableItem) {
-    position = tableItem.position;
-    console.log(position);
+  var position;
+  TableItem.find({id_tabla: req.params.id}).sort({_id: -1}).limit(1).exec(function(error, tableItem) {
+    if (req.body.size == null) {
+      req.body.size = 1;
+    }
+      if (tableItem[0].position == undefined) {
+      //position = tableItem[0].position;
+        console.log('position: ' + tableItem[0].position);
+        position = 0;
+      }else{
+        position = Number(tableItem[0].position) + 1;
+        console.log('pos2: ' + position);
+      }
 
-  if (req.body.item_type == 'Exercise') {
-    var item_title;
-    var item_description;
-    var item_image; 
-    var item_gif;
-    var item_video;
+    if (req.body.item_type == 'Exercise') {
+      var item_title;
+      var item_description;
+      var item_image; 
+      var item_gif;
+      var item_video;
 
     Exercise.findOne({_id: req.body.item_id}, function(error, exercise) {
       item_title = exercise.title;
@@ -611,7 +749,7 @@ router.post('/tabla/:id/nuevo/item/', function(req, res, next){
           sessions: req.body.sessions,
           repetitions: req.body.repetitions,
           weight: req.body.weight,
-          time: req.body.time + " " + req.body.time_unit,
+          time: req.body.time,
           dateCreated: Date.now(),
           item_title: item_title,
           item_description: item_description,
@@ -627,14 +765,28 @@ router.post('/tabla/:id/nuevo/item/', function(req, res, next){
         } else {
            Table.find().exec(function (error, table) {
           return res.redirect('/tabla/' + req.params.id + '/');
-            });
-        }
+            }); 
+         }
       });
     });
-  } else if (req.body.item_type == 'Note') {
+  } else if (req.body.item_type == 'Note' || req.body.item_type == 'Tecnica') {
+    TableItem.find({id_tabla: req.params.id}).sort({_id: -1}).limit(1).exec(function(error, tableItem) {
+        if (tableItem[0].position == undefined) {
+      //position = tableItem[0].position;
+        console.log('position: ' + tableItem[0].position);
+        position = 0;
+      }else{
+        position = Number(tableItem[0].position) + 1;
+        console.log('pos2: ' + position);
+      }
+      });
+  
     Note.findOne({_id: req.body.item_id}, function(error, note) {
       item_title = note.title;
       item_description = note.description;
+      if (req.body.columns_number == null ) {
+        req.body.columns_number = 1;
+      };
       var tableItemData = {
           id_tabla: req.params.id,
           size: req.body.columns_number,
@@ -693,8 +845,8 @@ router.post('/tabla/:id/nuevo/item/', function(req, res, next){
       });
   };
 });
+  });
 
-});
 // Editar Table Item
 router.get('/tabla/item/:id/', function(req, res, next) {
   TableItem.findOne({_id: req.params.id}, function (error, tableItem) { 
@@ -705,7 +857,57 @@ router.get('/tabla/item/:id/', function(req, res, next) {
          };
       });
 });
-// Editar item de tabla /tabla/" + table.id + "/new/item/
+// Mover Table Item a la izquierda
+router.get('/tabla/:id/item/:item/izquierda/:position', function(req, res, next) {
+  console.log('params positions: ' + req.params.position);
+  if (isNaN(req.params.position)) {
+    var position = 0;
+    var tableItemData = {
+        position: position
+      };
+    console.log('position si es NaN: ' + position);
+    }else{
+    position = Number(req.params.position) + 1;
+    var tableItemData = {
+        position: position
+      };
+    console.log('position no NaN: ' + position);
+    };
+    // use schema's `create` method to insert document into Mongo
+      TableItem.findByIdAndUpdate(req.params.item, tableItemData, function (error, tableItem) {
+        if (error) {
+          return next(error);
+        } else {
+          return res.redirect('/tabla/' + req.params.id + '/');
+        }
+    });
+  });
+// Mover Table Item a la derecha
+router.get('/tabla/:id/item/:item/derecha/:position', function(req, res, next) {
+  console.log('params positions: ' + req.params.position);
+  if (isNaN(req.params.position)) {
+    var position = 0;
+    var tableItemData = {
+        position: position
+      };
+    console.log('position si es NAN: ' + position);
+    }else{
+    position = Number(req.params.position) - 1;
+    var tableItemData = {
+        position: position
+      };
+    console.log('position no Nan: ' + position);
+    };
+    // use schema's `create` method to insert document into Mongo
+      TableItem.findByIdAndUpdate(req.params.item, tableItemData, function (error, tableItem) {
+        if (error) {
+          return next(error);
+        } else {
+          return res.redirect('/tabla/' + req.params.id + '/');
+        }
+    });
+  });
+  // Editar item de tabla /tabla/" + table.id + "/new/item/
 router.post('/tabla/editar/item/:id/', function(req, res, next){
   if (req.body.type == 'Exercise') {
 
@@ -765,11 +967,150 @@ router.get('/tabla/eliminar/item/:id/', function(req, res, next) {
     }
   }); 
 });
+// Publicar Tabla
+router.get('/tabla/:id/publicar/', function(req, res, next) {
+  var tableData = {
+        published: 'yes',
+      };
+  Table.findByIdAndUpdate(req.params.id, tableData, function (error, table) {
+        if (error) {
+          return next(error);
+        } else {
+          return res.redirect('/tabla/' + req.params.id + '/');
+        }
+  })
+});
+// Desactivar Tabla
+router.get('/tabla/:id/borrador/', function(req, res, next) {
+  var tableData = {
+    published: 'no',
+  };
+  Table.findByIdAndUpdate(req.params.id, tableData, function (error, table) {
+    if (error) {
+      return next(error);
+    }else{
+      return res.redirect('/tabla/' + req.params.id + '/');
+    }
+  })
+});
+// Guardar Plantilla
+router.post('/tabla/:id/plantilla/', function(req, res, next) {
+  Table.findOne({_id: req.params.id}, function (error, table) {
+    //console.log(TemplateTable)
+    var TemplateData = {
+        originalId: table.id, 
+        owner: req.session.userId, 
+        name: req.body.template_name, 
+        title: table.title, 
+        description: table.description, 
+        dateCreated: table.dateCreated, 
+        dateModified: table.dateModified, 
+        category: table.category,
+        published: "no",
+    };
+          console.log('mi userId' + req.session.userId);
+          TemplateTable.create(TemplateData, function (error, template) {
+            if (error) {
+              console.log(error);
+              return next(error);
+            }else{
+              console.log('template id: ' + template.id);
+              TableItem.find({"id_tabla": table.id}, function( error, tableItem) {
+                if (error) {
+                  console.log('error al buscar items: ' + error)
+                }else{
+                  tableItem.forEach(function(tableItem) {
+                    if (error) {
+                      console.log('error al recorrer los encontrados: ' + error)
+                    }else{
+                      var TemplateItemData = new TemplateItem({
+                        position: tableItem.position,
+                        id_template: template.id,
+                        size: tableItem.size,
+                        color: tableItem.color,
+                        item_id: tableItem.item_id,
+                        type: tableItem.type,
+                        session: tableItem.session,
+                        repetitions: tableItem.repetitions,
+                        weight: tableItem.weight,
+                        time: tableItem.time,
+                        dateCreated: Date.now(),
+                        item_title: tableItem.item_title,
+                        item_description: tableItem.item_description,
+                        item_image: tableItem.item_image,
+                        item_gif: tableItem.item_gif,
+                        item_video: tableItem.item_video,
+                      });
+                      //console.log('template item data: ' + TemplateItemData)
+                      //TemplateItem.create(TemplateItemData, function(error, templateItem) {
+                        TemplateItemData.save(function(error, templateItem) {
+                        if (error) {
+                          console.log('error al guardar el template item: ' + error);
+                          console.log('templateItem: ' + templateItem);
+                          return next(error);
+                        }else{
+                          //console.log(templateItem);
+                          console.log("saved " + TemplateItemData.id_template);
+                        }
+                      })
+                    }
+                  })
+                }
+              })
+              return res.redirect('/tabla/' + req.params.id + '/');
+          }
+        })
+  });
+});
+router.get('/plantilla/:id', function(req, res, next){
+  TemplateTable.findOne({_id: req.params.id}, function (error, template) {
+        if (error) {
+          return next(error);
+        }else{
+          Exercise.find()
+            .exec(function (error, exercise) {
+              Note.find()
+                .exec(function (error, note) {
+                    TemplateItem.find({id_template: template.id}).sort({position: 'desc'})
+                      .exec(function (error, templateItem) {
+                        return res.render('templateEdit', { title: 'Editar Plantilla', template: template, exercise: exercise, note: note, templateItem: templateItem});
+                      });
+                });
+              });
+        };
+      });
+});
+
+router.post('/search', (req, res) => {
+  let q = req.body.query;
+  let query = {
+    "$or": [{"name": {"$regex": q, "$options": "i"}}, {"lastname": {"$regex": q, "$options": "i"}}]
+    //"name": {"$regex": q, "$options": "i"}
+  };
+  let output = [];
+  console.log(q);
+  User.find(query).limit(6).then( usrs => {
+      if(usrs && usrs.length && usrs.length > 0) {
+        console.log('algo encuentra: ' + usrs);
+          usrs.forEach(user => {
+            let obj = {
+                id: user.name + ' ' + user.lastname,
+                label: user.name + ' ' + user.lastname
+            };
+            output.push(obj);
+          });
+      }
+      res.json(output);
+  }).catch(err => {
+    res.sendStatus(404);
+  });
+
+});
 
 
 // GET /
 router.get('/', function(req, res, next) {
-  return res.render('index', { title: 'Home' });
+  return res.render('index', { title: 'Home' }); 
 
 });
 

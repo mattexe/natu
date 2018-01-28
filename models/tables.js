@@ -32,6 +32,10 @@ var TableSchema = new mongoose.Schema({
     category: {
       type: String,
       required: false
+    },
+    published: {
+      type: String,
+      required: true
     }
 });
 var Table = mongoose.model('Table', TableSchema);

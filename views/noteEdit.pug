@@ -7,7 +7,7 @@ block content
         h1.display-4.m-b-2 Editar Nota
       
         // register form
-        form(method='POST' action='/notas/editar')
+        form(method='POST' action='/notas/' + note.id + '/editar')
           div.form-group.col-md-6
             label(for='title') Título:
             input#title.form-control(type='text', placeholder='Título' name='title' value=note.title)

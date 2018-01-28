@@ -4,10 +4,10 @@ var mongoose = require('mongoose');
 var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
 var app = express();
-
 // mongodb connection
-//mongoose.connect("mongodb://localhost:27017/naturdb");
-mongoose.connect('mongodb://naturdbUser:naturvit2018@mongodb19588-naturvitia.jelastic.cloudhosted.es:27017/naturdb');
+mongoose.Promise = global.Promise;
+mongoose.connect("mongodb://localhost:27017/naturdb");
+//mongoose.connect('mongodb://naturdbUser:naturvit2018@mongodb19588-naturvitia.jelastic.cloudhosted.es:27017/naturdb');
 var db = mongoose.connection;
 // mongo error
 db.on('error', console.error.bind(console, 'connection error:'));

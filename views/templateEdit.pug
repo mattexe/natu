@@ -1,0 +1,269 @@
+extends layout
+
+block content
+  .main.container
+    .row
+      .col-md-12
+        h1.display-4.m-b-2 Editar Plantilla
+        div.row(style="text-align: center;")
+          div.col-md-12
+              a.btn.btn-secondary(data-toggle="modal", data-target="#separator") + Separador
+              a.btn.btn-secondary(data-toggle="modal", data-target="#exercise") + Ejercicio
+              a.btn.btn-secondary(data-toggle="modal", data-target="#note") + Nota
+              a.btn.btn-secondary(data-toggle="modal", data-target="#template") Crear Plantilla
+              if template.published != "yes"
+                a.btn.btn-success(href="/plantilla/" + template.id + "/publicar/") Publicar
+              else
+                a.btn.btn-warning(href="/plantilla/" + template.id + "/borrador/") Borrador
+              a.btn.btn-danger(href="#") Eliminar plantilla
+        div.row
+          div.page
+            div.page-header
+              h1 Naturvitia
+              | !{template.description}
+            div.page-body
+              each ti in templateItem
+                  if ti.type == 'Separator'
+                      div.card(style="width: 99%; margin: 1%; height: 3%; float: left; background-color:" + ti.color)
+                        h6#item_title.card-title(style="text-align: center") #{ti.item_title}
+                        div.position-arrow-left(style="display:none;")
+                          a(href='/plantilla/' + ti.id_plantilla + '/item/' + ti.id + '/izquierda/' + (Number(ti.position)))
+                            h4="<"
+                        div.edit-button(style="display:none;")
+                          a(href='/plantilla/item/' + ti.id + "/")
+                            i(class='fas fa-edit')
+                        div.position-arrow-right(style="display:none;")
+                          a(href='/plantilla/' + ti.id_plantilla + '/item/' + ti.id + '/derecha/' + (Number(ti.position))) 
+                            h4=">"
+                  else
+                    if ti.type == 'Note' || ti.type == 'Tecnica'
+                      if ti.size == 1
+                        div.card(style="width: 23%; margin: 1%; height: 20%; float: left; background-color:" + ti.color)
+                          div.card-body
+                              h6#item_title.card-title #{ti.item_title}
+                              div.card-text-note(style="font-size: 12px;") 
+                                | !{ti.item_description}
+                          div.position-arrow-left(style="display:none;")
+                            a(href='/plantilla/' + ti.id_plantilla + '/item/' + ti.id + '/izquierda/' + (Number(ti.position)))
+                              h4="<"
+                          a(href='/plantilla/item/' + ti.id + "/")
+                            div.edit-button(style="display:none;")
+                              i(class='fas fa-edit')
+                          div.position-arrow-right(style="display:none;")
+                            a(href='/plantilla/' + ti.id_plantilla + '/item/' + ti.id + '/derecha/' + (Number(ti.position))) 
+                              h4=">"
+                      else if ti.size == 2
+                        div.card(style="width: 48%; margin: 1%; height: 20%; float: left; background-color:" + ti.color)
+                          div.card-body
+                              h6#item_title.card-title #{ti.item_title}
+                              div.card-text-note(style="font-size: 12px;") 
+                                | !{ti.item_description}
+                          div.position-arrow-left(style="display:none;")
+                            a(href='/plantilla/' + ti.id_plantilla + '/item/' + ti.id + '/izquierda/' + (Number(ti.position)))
+                              h4="<"
+                          a(href='/plantilla/item/' + ti.id + "/")
+                            div.edit-button(style="display:none;")
+                              i(class='fas fa-edit')
+                          div.position-arrow-right(style="display:none;")
+                            a(href='/plantilla/' + ti.id_plantilla + '/item/' + ti.id + '/derecha/' + (Number(ti.position))) 
+                              h4=">"
+                      else if ti.size == 3
+                        div.card(style="width: 73%; margin: 1%; height: 20%; float: left; background-color:" + ti.color)
+                          div.card-body
+                              h6#item_title.card-title #{ti.item_title}
+                              div.card-text-note(style="font-size: 12px;") 
+                                | !{ti.item_description}
+                          div.position-arrow-left(style="display:none;")
+                            a(href='/plantilla/' + ti.id_plantilla + '/item/' + ti.id + '/izquierda/' + (Number(ti.position)))
+                              h4="<"
+                          a(href='/plantilla/item/' + ti.id + "/")
+                            div.edit-button(style="display:none;")
+                              i(class='fas fa-edit')
+                          div.position-arrow-right(style="display:none;")
+                            a(href='/plantilla/' + ti.id_plantilla + '/item/' + ti.id + '/derecha/' + (Number(ti.position))) 
+                              h4=">"
+                      else if ti.size >= 4
+                        div.card(style="width: 98%; margin: 1%; height: 20%; float: left; background-color:" + ti.color)
+                          div.card-body
+                              h6#item_title.card-title #{ti.item_title}
+                              div.card-text-note(style="font-size: 12px;") 
+                                | !{ti.item_description}
+                          div.position-arrow-left(style="display:none;")
+                            a(href='/plantilla/' + ti.id_plantilla + '/item/' + ti.id + '/izquierda/' + (Number(ti.position)))
+                              h4="<"
+                          a(href='/plantilla/item/' + ti.id + "/")
+                            div.edit-button(style="display:none;")
+                              i(class='fas fa-edit')
+                          div.position-arrow-right(style="display:none;")
+                            a(href='/plantilla/' + ti.id_plantilla + '/item/' + ti.id + '/derecha/' + (Number(ti.position))) 
+                              h4=">"
+                    else
+                      div.card(style="width: 23%; margin: 1%; height: 20%; float: left; background-color:" + ti.color)
+                        div.position-arrow-left(style="display:none;")
+                          a(href='/plantilla/' + ti.id_plantilla + '/item/' + ti.id + '/izquierda/' + (Number(ti.position)))
+                            h4="<"
+                        a(href='/plantilla/item/' + ti.id + "/")
+                          div.edit-button(style="display:none;")
+                            i(class='fas fa-edit')
+                        div.position-arrow-right(style="display:none;")
+                          a(href='/plantilla/' + ti.id_plantilla + '/item/' + ti.id + '/derecha/' + (Number(ti.position))) 
+                            h4=">"
+                        img.card-img-top(src=ti.item_image, style="display:cover;")
+                        div.card-body
+                          div.card-text
+                            h6#item_title.card-title #{ti.item_title}
+                            .card-text(style="font-size: 12px;") 
+                              | !{ti.item_description}
+                        div.data-grid
+                          div.col-md-3.data-item
+                            p S
+                          div.col-md-3.data-item
+                            p R
+                          div.col-md-3.data-item
+                            p P
+                          div.col-md-3.data-item
+                            p T
+                          div.col-md-3.data-item
+                            p #{ti.sessions}
+                          div.col-md-3.data-item
+                            p #{ti.repetitions}
+                          div.col-md-3.data-item
+                            p #{ti.weight}
+                          div.col-md-3.data-item
+                            p #{ti.time}
+              script(type='text/javascript').
+                   $(document).ready(function () {
+                   $('.position-arrow-left').hide(); //hide at the beginning
+                   $('.position-arrow-right').hide(); //hide at the beginning
+                   $('.edit-button').hide();
+
+                      $('.card').hover(function () {
+                      $('.position-arrow-left').show();
+                      $('.position-arrow-right').show();
+                      $('.edit-button').show();
+                      $('.card').css("background-color", "#ddd");
+                    }, function() {
+                      $('.position-arrow-left').hide();
+                      $('.position-arrow-right').hide();
+                      $('.edit-button').hide();
+                      $('.card').css("background-color", "#fff");
+                    });
+                      $('.page-separator').hover(function () {
+                      $('.position-arrow-left').show();
+                      $('.position-arrow-right').show();
+                      $('.edit-button').show();
+                      $('.page-separator').css("background-color", "#ddd");
+                    }, function() {
+                      $('.position-arrow-left').hide();
+                      $('.position-arrow-right').hide();
+                      $('.edit-button').hide();
+                      $('.page-separator').css("background-color", "#fff");
+                    });
+                        //- $("#card-item").on("mouseout", function () {
+                        //-     $('.position-arrow-left').hide();
+                        //-     $('.position-arrow-right').hide();
+                        //- });
+                 });
+
+  div#exercise.modal.fade(role="dialog", tabindex="-1" aria-labelledby="exercise", aria-hidden="true")
+    div.modal-dialog(role="document")
+      div.modal-content
+        div.modal-header
+          h5.modal-title Añadir ejercicio
+          button(type="button" class="close" data-dismiss="modal" aria-label="Close")
+            span(aria-hidden="true")
+        div.modal-body
+          form#exercise-form(method="POST" action="/plantilla/" + template.id + "/nuevo/item/")
+            div.form-group.col-md-6
+              label(for='colors') Color de fondo
+              input.form-control(type='color', name='colors')
+            div.form-group.col-md-12
+                each e in exercise
+                    .radio
+                      label
+                      input(type='radio', name='item_id', value=e.id)
+                      | Ejercicio: #{e.title}
+            div.form-group
+              label.col-md-4 Sesiones
+              input.col-md-2(type="text" name="sessions")
+            div.form-group
+              label.col-md-4 Repeticiones
+              input.col-md-2(type="text" name="repetitions")
+            div.form-group
+              label.col-md-4 Peso
+              input.col-md-2(type="text" name="weight")
+            div.form-group
+              label.col-md-2 Tiempo
+              input.col-md-2(type="text" name="time")
+              input(type="hidden" name="item_type" value="Exercise")
+            div.form-group.col-md-12
+             button.btn.btn-primary(type="submit" name="submit") Guardar
+             div.etc
+        div.modal-footer.col-md-12
+          btn.btn.btn-secondary(type="button" data-dismiss="modal") Close
+    
+  div#note.modal.fade(role="dialog", tabindex="-1" aria-labelledby="note", aria-hidden="true")
+    div.modal-dialog(role="document")
+      div.modal-content
+        div.modal-header
+          h5.modal-title Añadir nota
+          button(type="button" class="close" data-dismiss="modal" aria-label="Close")
+            span(aria-hidden="true")
+        div.modal-body
+          form#note-form(method="POST" action="/plantilla/" + template.id + "/nuevo/item/")
+            div.form-group.col-md-6
+              label(for='colors') Color de fondo
+              input.form-control(type='color', name='colors')
+            div.form-group.col-md-6
+              label(for='columns_number') Número de columnas
+              input(type='number', name='columns_number', value='1')
+            div.form-group.col-md-12
+              label.col-md-6(for='item_type') Tipo de Nota
+              select.col-md-6(name='item_type')
+                option(value='Note') Nota
+                option(value='Tecnica') Técnica
+                option(value='Separator') Separador
+            div.form-group.col-md-12
+              each n in note
+                  .radio
+                    label
+                    input(type='radio', name='item_id', value=n.id)
+                    | Nota: #{n.title}
+            div.form-group.col-md-12
+            button.btn.btn-primary(type="submit" name="submit") Guardar
+        div.modal-footer.col-md-12
+          btn.btn.btn-secondary(type="button" data-dismiss="modal") Close
+  div#separator.modal.fade(role="dialog", tabindex="-1" aria-labelledby="separator", aria-hidden="true")
+    div.modal-dialog(role="document")
+      div.modal-content
+        div.modal-header
+          h5.modal-title Añadir separador
+          button(type="button" class="close" data-dismiss="modal" aria-label="Close")
+            span(aria-hidden="true")
+        div.modal-body(style='height:164px;')
+          form#separator-form(method="POST" action="/plantilla/" + template.id + "/nuevo/item/")
+            div.form-group.col-md-12
+              label(for='item_title') Título para el Separador
+              input.form-control(type='text', name='item_title')
+              input(type="hidden" name="item_type" value="Separator")
+            button.btn.btn-primary(type="submit" name="submit") Guardar
+        div.modal-footer.col-md-12
+          btn.btn.btn-secondary(type="button" data-dismiss="modal") Close
+  
+  div#template.modal.fade(role="dialog", tabindex="-1" aria-labelledby="note", aria-hidden="true")
+    div.modal-dialog(role="document")
+      div.modal-content
+        div.modal-header
+          h5.modal-title Crear Plantillas
+          button(type="button" class="close" data-dismiss="modal" aria-label="Close")
+            span(aria-hidden="true")
+        div.modal-body(style='height:164px;')
+          form#note-form(method="POST" action="/plantilla/" + template.id + "/plantilla/")
+            div.form-group.col-md-12
+              label(for='template_name') Nombre
+              input.form-control(type='text', name='template_name')
+            div.form-group.col-md-12
+            button.btn.btn-primary(type="submit" name="submit") Guardar
+        div.modal-footer.col-md-12
+          btn.btn.btn-secondary(type="button" data-dismiss="modal") Close
+  
