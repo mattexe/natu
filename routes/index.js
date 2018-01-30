@@ -419,9 +419,10 @@ Exercise.findOne({ _id: req.params.id }, function (err, doc){
                 } else {
                   console.log(req.file);
                   console.log(tableItem);
+                  return res.redirect('/ejercicios/' + req.params.id + '/editar');
                 }
         });
-          return res.redirect('/ejercicios/' + req.params.id + '/editar');
+          
 };
 });
 console.log(req.body); //form fields
