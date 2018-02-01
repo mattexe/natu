@@ -3,28 +3,44 @@ extends layout
 block content
   .main.container
     .row
-      .col-md-12
-        h1.display-4.m-b-2 Usuarios
-        div.row.col-md-12
-          div.row
-            div.col-md-4
-              div.user-item
-                btn.btn.btn-secondary.user-boton-nuevo
-                  a(href='/usuarios/crear') +
-            each u in user
-              div.col-md-4
-                div.user-item
-                  div.user-texts
-                    a(href='/usuario/' + u.id)
-                      h1= u.name + ' ' + u.lastname
-                    p= u.username
-                    p= u.email
-                    p= u.typeOfUser
-                    p= u.dateCreated
-                  div.btn-group(role='group')
-                    a.btn.btn-secondary(href='/tabla/nueva/' + u.id + '/')
-                      i(class='fas fa-table')
-                    a.btn.btn-secondary(href='/usuarios/' + u.id + '/editar/')
-                      i(class='fas fa-edit')
-                    a.btn.btn-secondary(href='/usuarios/' + u.id + '/eliminar/') 
-                      i(class='fas fa-trash-alt')
+
+      if uAdmin.typeOfUser == 'SuperAdmin' || uAdmin.typeOfUser == 'Admin'
+        .col-md-12
+          h1.display-4.m-b-2 Usuarios
+          div.row.col-md-12
+            div.row
+              btn.btn.btn-secondary
+                  a(href='/usuarios/crear') Crear Usuario
+              table.table
+                  thead.thead-light
+                    tr
+                      th(scope="col") Nombre
+                      th(scope="col") Usuario
+                      th(scope="col") Email
+                      th(scope="col") Tipo
+                      th(scope="col") Fecha de creción
+                      th(scope="col") Tabla
+                      th(scope="col") Editar
+                      th(scope="col") Eliminar
+                  tbody
+                    each u in user
+                      tr
+                        td(scope="row") 
+                          a(href='/usuario/' + u.id) #{u.name} #{u.lastname}
+                        td(scope="row") 
+                          a(href='/usuario/' + u.id) #{u.username}
+                        td(scope="row")   
+                          a(href='/usuario/' + u.id) #{u.email}
+                        td(scope="row")   
+                          a(href='/usuario/' + u.id) #{u.typeOfUser}
+                        td(scope="row")   
+                          a(href='/usuario/' + u.id) #{u.dateCreated}
+                        td(scope="row")
+                          a.btn.btn-secondary(href='/tabla/nueva/' + u.id + '/') Crear Tabla
+                        td(scope="row")
+                          a.btn.btn-secondary(href='/usuarios/' + u.id + '/editar/') Editar
+                        td(scope="row")
+                          a.btn.btn-secondary(href='/usuarios/' + u.id + '/eliminar/') Eliminar
+      else
+        .col-md-12
+          h1 No tiene permisos para ver esta página.

@@ -48,11 +48,21 @@ block content
 						p Aún no tienes Admins
 					else
 						.row
-						each au in adminUser
-							.col-md-6
-								p=au.name + " " + au.lastname + " - Usuario: " + au.username
-							.col-md-6
-								p=au.dateCreated
+							table.table.table-striped
+								thead.thead-light
+									tr
+										th(scope="col") Nombre
+										th(scope="col") Usuario
+										th(scope="col") Fecha de creción
+								tbody
+									each au in adminUser
+										tr
+											td(scope="row") 
+												a(href='/usuario/' + au.id) #{au.name} #{au.lastname}
+											td(scope="row") 
+												a(href='/usuario/' + au.id) #{au.username}
+											td(scope="row") 	
+												a(href='/usuario/' + au.id) #{au.dateCreated}
 			.mybloques
 				.list
 				if user.typeOfUser == 'SuperAdmin' || user.typeOfUser == 'Admin' 
@@ -61,11 +71,18 @@ block content
 						p Aún no tienes Colaboradores
 					else
 						.row
-						each cu in collaboratorUser
-							.col-md-6
-								p=cu.name
-							.col-md-6
-								p=cu.dateCreated
+							table.table.table-striped
+								thead.thead-light
+									tr
+										th(scope="col") Nombre
+										th(scope="col") Fecha de creción
+								tbody
+									each cu in collaboratorUser
+										tr
+											td(scope="row") 
+												a(href='/usuario/' + cu.id) #{cu.name}
+											td(scope="row") 	
+												a(href='/usuario/' + cu.id) #{cu.dateCreated}	
 			.mybloques
 				.list
 				if user.typeOfUser == 'SuperAdmin' || user.typeOfUser == 'Admin' || user.typeOfUser == 'Collaborator'
@@ -74,11 +91,18 @@ block content
 						p Aún no tienes Clientes
 					else
 						.row
-						each clu in clientUser
-							.col-md-6
-								p=clu.name
-							.col-md-6
-								p=clu.dateCreated
+							table.table.table-striped
+								thead.thead-light
+									tr
+										th(scope="col") Nombre
+										th(scope="col") Fecha de creción
+								tbody
+									each clu in clientUser
+										tr
+											td(scope="row") 
+												a(href='/usuario/' + clu.id) #{clu.name}
+											td(scope="row") 	
+												a(href='/usuario/' + clu.id) #{clu.dateCreated}			
 			.mybloques
 				.list
 				if user.typeOfUser == 'SuperAdmin' || user.typeOfUser == 'Admin'
@@ -87,12 +111,18 @@ block content
 						p Aún no tienes Plantillas
 					else
 						.row
-						each tp in template
-							.col-md-6
-								a(href="/plantilla/" + tp.id)
-									p=tp.name
-							.col-md-6
-								p=tp.dateCreated
+							table.table.table-striped
+								thead.thead-light
+									tr
+										th(scope="col") Nombre
+										th(scope="col") Fecha de creción
+								tbody
+									each tp in template
+										tr
+											td(scope="row") 
+												a(href="/plantilla/" + tp.id) #{tp.name}
+											td(scope="row") 	
+												a(href="/plantilla/" + tp.id) #{tp.dateCreated}	
 			.mybloques
 				.list
 				if user.typeOfUser == 'SuperAdmin' || user.typeOfUser == 'Admin' || user.typeOfUser == 'Collaborator' || user.typeOfUser == 'Client'
@@ -101,11 +131,18 @@ block content
 						p Aún no tienes Tablas
 					else
 						.row
-						each tb in table
-							.col-md-6
-								p=tb.title
-							.col-md-6
-								p=tb.dateCreated
+							table.table.table-striped
+								thead.thead-light
+									tr
+										th(scope="col") Nombre
+										th(scope="col") Fecha de creción
+								tbody
+									each tb in table
+										tr
+											td(scope="row") 
+												a(href="/tabla/" + tb.id) #{tb.title}
+											td(scope="row") 	
+												a(href="/tabla/" + tb.id) #{tb.dateCreated}	
 			.mybloques
 				.list
 				if user.typeOfUser == 'SuperAdmin' || user.typeOfUser == 'Admin' || user.typeOfUser == 'Collaborator' || user.typeOfUser == 'Client'

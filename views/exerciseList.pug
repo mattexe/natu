@@ -7,20 +7,49 @@ block content
         h1.display-4.m-b-2 Ejercicios
         div.row.col-md-12
           div.row
-            div.col-md-4
-              div.exercise-item
-                btn.btn.btn-secondary.boton-nuevo
-                  a(href='/ejercicios/crear') +
-            each e in exercise
-              div.col-md-4
-                div.exercise-item
-                  div
-                    img.exercise-image(src=e.gif, alt=e.title + - + 'Gif')
-                  div.exercise-texts
-                    h1= e.title
-                    p= e.description
-                    p= e.category 
-                  a(href='/ejercicios/' + e.id + '/editar') 
-                    button.btn.btn-warning Editar
-                  a(href='/ejercicios/' + e.id + '/eliminar') 
-                    button.btn.btn-danger(type='submit') Eliminar
+            btn.btn.btn-secondary
+              a(href='/ejercicios/crear') Crear Usuario
+            table.table.table-striped
+              thead.thead-light
+                tr
+                  th(scope="col") Título
+                  th(scope="col") Descripción
+                  th(scope="col") Categoría
+                  th(scope="col") Imagen
+                  th(scope="col") Gif
+                  th(scope="col") Video
+                  th(scope="col") Referencia
+                  th(scope="col") Editar
+                  th(scope="col") Eliminar
+              tbody
+                each e in exercise
+                  tr
+                    td(scope="row") 
+                      a(href='/ejercicios/' + e.id + '/editar/') #{e.title}
+                    td(scope="row") 
+                      a(href='/ejercicios/' + e.id + '/editar/') !{e.description}
+                    td(scope="row")   
+                      a(href='/ejercicios/' + e.id + '/editar/') #{e.category}
+                    td(scope="row")   
+                      if e.jpg
+                        a(href='/ejercicios/' + e.id + '/editar/') Sí
+                      else
+                        a(href='/ejercicios/' + e.id + '/editar/') No
+                    td(scope="row")
+                      if e.gif
+                        a(href='/ejercicios/' + e.id + '/editar/') Sí
+                      else
+                        a(href='/ejercicios/' + e.id + '/editar/') No
+                    td(scope="row")
+                      if e.video
+                        a(href='/ejercicios/' + e.id + '/editar/') Sí
+                      else
+                        a(href='/ejercicios/' + e.id + '/editar/') No
+                    td(scope="row")   
+                      a(href='/ejercicios/' + e.id + '/editar/') #{e.originalId}
+                    td(scope="row")
+                      a.btn.btn-secondary(href='/ejercicios/' + e.id + '/editar/') Editar
+                    td(scope="row")
+                      a.btn.btn-secondary(href='/ejercicios/' + e.id + '/eliminar/') Eliminar
+
+          

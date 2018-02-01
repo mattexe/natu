@@ -9,6 +9,8 @@ var TemplateTable = require('../models/template_table');
 var TemplateItem = require('../models/template_items');
 var ECats = require('../models/exercises_categories');
 var mid = require('../middleware');
+var fs = require('fs');
+var progress = require('progress-stream');
 var multer = require('multer');
   bodyParser = require('body-parser');
   //path = require('path');
@@ -108,18 +110,22 @@ router.get('/dashboard/', mid.requiresLogin, function(req, res, next) {
 });
     });
 // GET /usuarios lista
-router.get('/usuarios/', function(req, res, next) {
-  User.find()
-      .exec(function (error, user) {
+router.get('/usuarios/', mid.requiresLogin, function(req, res, next) {
+  User.findById(req.session.userId)
+      .exec(function (error, uAdmin) {
+        User.find()
+          .exec(function(error, user){
         if (error) {
           return next(error);
         } else {
-          return res.render('usersList', { title: 'Usuarios', user: user });
+          console.log(uAdmin.typeOfUser)
+          return res.render('usersList', { title: 'Usuarios', uAdmin: uAdmin, user: user });
         }
       });
+    });
 });
 // Nuevo usuario
-router.get('/usuarios/crear/', function(req, res, next){
+router.get('/usuarios/crear/', mid.requiresLogin, function(req, res, next){
   return res.render('usersNew', { title: 'Crear Usuario'});
 })
 // POST /usuarios (crear usuario)
@@ -168,7 +174,7 @@ router.post('/usuarios/crear/', function(req, res, next) {
     }
 })
 // Editar usuario
-router.get('/usuarios/:id/editar/', function(req, res, next) {
+router.get('/usuarios/:id/editar/', mid.requiresLogin, function(req, res, next) {
   User.findOne({_id: req.params.id}, function (error, user) {
         if (error) {
           return next(error);
@@ -180,7 +186,7 @@ router.get('/usuarios/:id/editar/', function(req, res, next) {
       });
 });
 // Ver usuario
-router.get('/usuario/:id/', function(req, res, next) {
+router.get('/usuario/:id/', mid.requiresLogin, function(req, res, next) {
   User.findOne({_id: req.params.id}, function (error, user) {
         if (error) {
           return next(error);
@@ -214,7 +220,7 @@ router.post('/usuarios/editar/', function(req, res, next) {
         };
 
       // use schema's `update` method to insert document into Mongo
-      User.update(userData, function (error, user) {
+      User.update({email: req.body.email}, function (error, user) {
         if (error) {
           return next(error);
         } else {
@@ -230,7 +236,7 @@ router.post('/usuarios/editar/', function(req, res, next) {
     }
 })
 // Eliminar usuarios 
-router.get('/usuarios/:id/eliminar/', function(req, res, next) {
+router.get('/usuarios/:id/eliminar/', mid.requiresLogin, function(req, res, next) {
   User.findOne({_id: req.params.id}, function (error, user) {
         if (error) {
           return next(error);
@@ -240,7 +246,7 @@ router.get('/usuarios/:id/eliminar/', function(req, res, next) {
       });
 });
 // Confirmar Eliminar usuarios 
-router.get('/usuarios/:id/eliminar/confirmado/', function(req, res, next) {
+router.get('/usuarios/:id/eliminar/confirmado/', mid.requiresLogin, function(req, res, next) {
  User.findByIdAndRemove(req.params.id, function (error, user) {
     if (error) {
           return next(error);
@@ -255,7 +261,7 @@ router.get('/usuarios/:id/eliminar/confirmado/', function(req, res, next) {
 
 // Notas
 // GET /usuarios lista
-router.get('/notas', function(req, res, next) {
+router.get('/notas', mid.requiresLogin, function(req, res, next) {
   Note.find()
       .exec(function (error, note) {
         if (error) {
@@ -266,7 +272,7 @@ router.get('/notas', function(req, res, next) {
       });
 });
 // Nuevo nota
-router.get('/notas/crear', function(req, res, next){
+router.get('/notas/crear', mid.requiresLogin, function(req, res, next){
   return res.render('noteNew', { title: 'Crear Nota'});
 })
 // POST /notas (crear nota)
@@ -301,7 +307,7 @@ router.post('/notas/crear', function(req, res, next) {
     }
 })
 // Editar nota
-router.get('/notas/:id/editar', function(req, res, next) {
+router.get('/notas/:id/editar', mid.requiresLogin, function(req, res, next) {
   Note.findOne({_id: req.params.id}, function (error, note) {
         if (error) {
           return next(error);
@@ -354,7 +360,7 @@ router.post('/notas/:id/editar', function(req, res, next) {
     }
 })
 // Eliminar notas 
-router.get('/notas/:id/eliminar/', function(req, res, next) {
+router.get('/notas/:id/eliminar/', mid.requiresLogin, function(req, res, next) {
   Note.findOne({_id: req.params.id}, function (error, note) {
         if (error) {
           return next(error);
@@ -364,7 +370,7 @@ router.get('/notas/:id/eliminar/', function(req, res, next) {
       });
 });
 // Confirmar Eliminar notas 
-router.get('/notas/:id/eliminar/confirmado/', function(req, res, next) {
+router.get('/notas/:id/eliminar/confirmado/', mid.requiresLogin, function(req, res, next) {
  Note.findByIdAndRemove(req.params.id, function (error, note) {
     if (error) {
           return next(error);
@@ -379,7 +385,7 @@ router.get('/notas/:id/eliminar/confirmado/', function(req, res, next) {
 
 // Ejercicios
 // GET /ejercicios lista
-router.get('/ejercicios', function(req, res, next) {
+router.get('/ejercicios', mid.requiresLogin, function(req, res, next) {
   Exercise.find()
       .exec(function (error, exercise) {
         if (error) {
@@ -390,11 +396,11 @@ router.get('/ejercicios', function(req, res, next) {
       });
 });
 // Nuevo ejercicio
-router.get('/ejercicios/crear', function(req, res, next){
+router.get('/ejercicios/crear', mid.requiresLogin, function(req, res, next){
   return res.render('exerciseNew', { title: 'Crear Ejercicio'});
 })
 // Subir archivos nuevo ejercicio
-router.get('/ejercicios/crear/:id', function(req, res, next) {
+router.get('/ejercicios/crear/:id', mid.requiresLogin, function(req, res, next) {
   Exercise.findOne({_id: req.params.id}, function (error, exercise) {
         if (error) {
           return next(error);
@@ -419,27 +425,11 @@ Exercise.findOne({ _id: req.params.id }, function (err, doc){
                 } else {
                   console.log(req.file);
                   console.log(tableItem);
-                  return res.redirect('/ejercicios/' + req.params.id + '/editar');
                 }
         });
-          
-};
+          return res.redirect('/ejercicios/' + req.params.id + '/editar');
+        }
 });
-console.log(req.body); //form fields
-  /* example output:
-  { title: 'abc' }
-   */
-console.log(req.file); //form files
-  /* example output:
-            { fieldname: 'upl',
-              originalname: 'grumpy.png',
-              encoding: '7bit',
-              mimetype: 'image/png',
-              destination: './uploads/',
-              filename: '436ec561793aa4dc475a88e84776b1b9',
-              path: 'uploads/436ec561793aa4dc475a88e84776b1b9',
-              size: 277056 }
-   */
   res.status(204).end();
 });
 router.post('/ejercicios/:id/subir/thumbnail', upload.single('video_thumbnail'), function (req, res) {
@@ -525,7 +515,7 @@ router.post('/ejercicios/crear', multer({ dest: './public/images/uploads/'}).any
   });
 
 // Editar ejercicio
-router.get('/ejercicios/:id/editar/', function(req, res, next) {
+router.get('/ejercicios/:id/editar/', mid.requiresLogin, function(req, res, next) {
   Exercise.findOne({_id: req.params.id}, function (error, exercise) {
         if (error) {
           return next(error);
@@ -574,7 +564,7 @@ Exercise.update(exerciseData, function (error, exercise) {
         
 
 // Confirmar si Eliminar ejercicio 
-router.get('/ejercicios/:id/eliminar', function(req, res) {
+router.get('/ejercicios/:id/eliminar', mid.requiresLogin, function(req, res) {
   Exercise.findOne({_id: req.params.id}, function (error, exercise) {
         if (error) {
           return next(error);
@@ -585,7 +575,7 @@ router.get('/ejercicios/:id/eliminar', function(req, res) {
   
 });
 // Eliminar ejercicio
-router.get('/ejercicios/:id/eliminar/confirmado', function(req, res) {
+router.get('/ejercicios/:id/eliminar/confirmado', mid.requiresLogin, function(req, res) {
   Exercise.findByIdAndRemove(req.params.id, function (error, exercise) {
     if (error) {
           return next(error);
@@ -644,12 +634,12 @@ router.get('/register', mid.loggedOut, function(req, res, next) {
 });
 
 // listado de tablas
-router.get('/tablas/', function(req, res, next) {
+router.get('/tablas/', mid.requiresLogin, function(req, res, next) {
   return res.render('tableList', { title: 'Listado de Tablas' });
 
 });
 // crear tabla paso 1/2
-router.get('/tabla/nueva/:id/', function(req, res, next) {
+router.get('/tabla/nueva/:id/', mid.requiresLogin, function(req, res, next) {
   User.findOne({_id: req.params.id}, function (error, user) {
     if (error) {
       return next(error);
@@ -660,7 +650,7 @@ router.get('/tabla/nueva/:id/', function(req, res, next) {
 
 });
 // crear tabla paso 2/2
-router.post('/tabla/nueva/', function(req, res, next) {
+router.post('/tabla/nueva/', mid.requiresLogin, function(req, res, next) {
 
   var tableData = {
         owner: req.session.userId,
@@ -682,7 +672,7 @@ router.post('/tabla/nueva/', function(req, res, next) {
       });
 });
 // Editar Tabla
-router.get('/tabla/:id/', function(req, res, next) {
+router.get('/tabla/:id/', mid.requiresLogin, mid.requiresLogin, function(req, res, next) {
   Table.findOne({_id: req.params.id}, function (error, table) {
         if (error) {
           return next(error);
@@ -701,7 +691,7 @@ router.get('/tabla/:id/', function(req, res, next) {
       });
 });
 //Eliminar Tabla
-router.get('/tabla/eliminar/:id/', function(req, res, next) {
+router.get('/tabla/eliminar/:id/', mid.requiresLogin, function(req, res, next) {
   Table.findByIdAndRemove(req.params.id, function(error, table) {
     if (error) {
       return next(error);
@@ -718,9 +708,10 @@ router.post('/tabla/:id/nuevo/item/', function(req, res, next){
     if (req.body.size == null) {
       req.body.size = 1;
     }
-      if (tableItem[0].position == undefined) {
+    console.log('intem encontrad? ' + tableItem[0]);
+      if (tableItem[0] == undefined || tableItem[0] == null) {
       //position = tableItem[0].position;
-        console.log('position: ' + tableItem[0].position);
+        //console.log('position: ' + tableItem[0].position);
         position = 0;
       }else{
         position = Number(tableItem[0].position) + 1;
@@ -849,7 +840,7 @@ router.post('/tabla/:id/nuevo/item/', function(req, res, next){
   });
 
 // Editar Table Item
-router.get('/tabla/item/:id/', function(req, res, next) {
+router.get('/tabla/item/:id/', mid.requiresLogin, function(req, res, next) {
   TableItem.findOne({_id: req.params.id}, function (error, tableItem) { 
         if (error) {
           return next(error);
@@ -859,7 +850,7 @@ router.get('/tabla/item/:id/', function(req, res, next) {
       });
 });
 // Mover Table Item a la izquierda
-router.get('/tabla/:id/item/:item/izquierda/:position', function(req, res, next) {
+router.get('/tabla/:id/item/:item/izquierda/:position', mid.requiresLogin, function(req, res, next) {
   console.log('params positions: ' + req.params.position);
   if (isNaN(req.params.position)) {
     var position = 0;
@@ -884,7 +875,7 @@ router.get('/tabla/:id/item/:item/izquierda/:position', function(req, res, next)
     });
   });
 // Mover Table Item a la derecha
-router.get('/tabla/:id/item/:item/derecha/:position', function(req, res, next) {
+router.get('/tabla/:id/item/:item/derecha/:position', mid.requiresLogin, function(req, res, next) {
   console.log('params positions: ' + req.params.position);
   if (isNaN(req.params.position)) {
     var position = 0;
@@ -959,7 +950,7 @@ router.post('/tabla/editar/item/:id/', function(req, res, next){
       });
   });
 // Eliminar item
-router.get('/tabla/eliminar/item/:id/', function(req, res, next) {
+router.get('/tabla/eliminar/item/:id/', mid.requiresLogin, function(req, res, next) {
   TableItem.findByIdAndRemove(req.params.id, function(error, tableItem) {
     if (error) {
       return next(error);
@@ -969,7 +960,7 @@ router.get('/tabla/eliminar/item/:id/', function(req, res, next) {
   }); 
 });
 // Publicar Tabla
-router.get('/tabla/:id/publicar/', function(req, res, next) {
+router.get('/tabla/:id/publicar/', mid.requiresLogin,  function(req, res, next) {
   var tableData = {
         published: 'yes',
       };
@@ -982,7 +973,7 @@ router.get('/tabla/:id/publicar/', function(req, res, next) {
   })
 });
 // Desactivar Tabla
-router.get('/tabla/:id/borrador/', function(req, res, next) {
+router.get('/tabla/:id/borrador/', mid.requiresLogin, function(req, res, next) {
   var tableData = {
     published: 'no',
   };
@@ -1063,7 +1054,7 @@ router.post('/tabla/:id/plantilla/', function(req, res, next) {
         })
   });
 });
-router.get('/plantilla/:id', function(req, res, next){
+router.get('/plantilla/:id', mid.requiresLogin, function(req, res, next){
   TemplateTable.findOne({_id: req.params.id}, function (error, template) {
         if (error) {
           return next(error);
@@ -1116,12 +1107,12 @@ router.get('/', function(req, res, next) {
 });
 
 // GET /ejercicios
-router.get('/ejercicios', function(req, res, next) {
+router.get('/ejercicios', mid.requiresLogin, function(req, res, next) {
   return res.render('exerciseList', { title: 'Ejercicios' });
 });
 
 // GET /contact
-router.get('/contact', function(req, res, next) {
+router.get('/contact', mid.requiresLogin, function(req, res, next) {
   return res.render('contact', { title: 'Contact' });
 });
 
